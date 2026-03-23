@@ -3,13 +3,22 @@
     "name": "PlayerActions",
     "maps": [
         {
-            "name": "Vehicle",
+            "name": "Car",
             "id": "91c91d84-ba44-4d98-b8c1-e5854db837ce",
             "actions": [
                 {
-                    "name": "New action",
+                    "name": "Throttle",
+                    "type": "Value",
+                    "id": "585872cd-603d-4a78-b58f-5da261653eea",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Turning",
                     "type": "Button",
-                    "id": "94f5d3a6-35de-4122-9aed-f68bfa49a491",
+                    "id": "7e9048a9-e651-4a7d-b97c-5d795f61be64",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -18,15 +27,120 @@
             ],
             "bindings": [
                 {
-                    "name": "",
-                    "id": "c7467c5f-f47f-45b8-8d20-ddf21849c393",
-                    "path": "",
+                    "name": "1D Axis",
+                    "id": "c3299fd8-1ebd-47fa-b254-6a986416315f",
+                    "path": "1DAxis",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
-                    "isComposite": false,
+                    "action": "Throttle",
+                    "isComposite": true,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "87cada5b-d912-41ae-a4ba-173137c54780",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Throttle",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "25a3e3b6-bb66-4060-bd0b-0aa4b77b0cec",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Throttle",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "10615afa-3be3-4e3a-a3ae-c6b704b88a9e",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Turning",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "8bc6f4eb-65c9-4b2a-ac64-295214b8c857",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Turning",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "c314352c-f645-47b3-9282-59668c399077",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Turning",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                }
+            ]
+        },
+        {
+            "name": "Camera",
+            "id": "ce37eeb4-b6af-4ce0-b073-7bbc7fc6fd8f",
+            "actions": [
+                {
+                    "name": "Zoom",
+                    "type": "Button",
+                    "id": "7f15cb61-5e58-4c06-99db-67397eb0db90",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "1D Axis",
+                    "id": "2c838d9b-60f5-4398-b824-27f6f3cb6974",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Zoom",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "0478562e-154f-4087-afcb-9015b12af783",
+                    "path": "<Mouse>/scroll/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "3b7df432-ad32-4fd7-9a29-28083c529bbb",
+                    "path": "<Mouse>/scroll/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         }
