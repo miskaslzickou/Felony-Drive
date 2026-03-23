@@ -152,7 +152,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 2
+  m_LinearDamping: 0
   m_AngularDamping: 3
   m_GravityScale: 1
   m_Material: {fileID: 0}
@@ -292,10 +292,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d4ea3e9245dbe8459d3b1a61d28f980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarController
-  maxSpeed: 20
-  acceleration: 5
+  maxSpeed: 61
+  acceleration: 15
   weight: 1
-  steeringPower: 1
+  speed: 0
+  steeringPower: 0.3
   steeringCurve:
     serializedVersion: 2
     m_Curve:
@@ -490,7 +491,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraController
   target: {fileID: 125375095}
   offset: {x: 0, y: 0, z: -10}
-  cameraMoveSpeed: 10
+  cameraMoveSpeed: 50
   maxZoomIn: 0.9
   maxZoomOut: 12
 --- !u!1 &613263525
