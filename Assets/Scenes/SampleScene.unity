@@ -282,6 +282,9 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  frontGrip: 10
+  rearGrip: 5
+  axleDistance: 1
 --- !u!212 &125375098
 SpriteRenderer:
   m_ObjectHideFlags: 0

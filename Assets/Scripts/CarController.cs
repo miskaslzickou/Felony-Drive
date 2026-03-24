@@ -14,6 +14,12 @@ public class CarController : MonoBehaviour
     public float steeringPower = 1f;
     public float brakeForce = 2f;
     public AnimationCurve steeringCurve; // køivka pro úpravu síly øízení v závislosti na rychlosti
+
+    [Header("Nastavení náprav(Gripu)")]
+    public float frontGrip = 5f;
+    public float rearGrip = 2f;
+    public float axleDistance = 1f;
+
     private void Awake()
     {
        playerActions = new PlayerActions(); //importování ovládání 
@@ -69,12 +75,30 @@ public class CarController : MonoBehaviour
         {
             rb.AddTorque(steeringInput * steeringPower* speedFactor * Mathf.Sign(forwardSpeed));
         }
-        
-        Vector2 lateralVelocity = transform.right * Vector2.Dot(rb.linearVelocity, transform.right);
-        Vector2 forwardVelocity = transform.up * Vector2.Dot(rb.linearVelocity, transform.up);
-        rb.linearVelocity = forwardVelocity + (lateralVelocity * 0.4f);
-        speed = rb.linearVelocity.magnitude;
-        
+
+        // --- SIMULACE PNEUMATIK A DRIFTU ---
+
+        // 1. Zjistíme, kde pøesnì ve 2D svìtì se nachází naše pøední a zadní náprava
+        Vector2 frontAxlePos = (Vector2)transform.position + (Vector2)transform.up * axleDistance;
+        Vector2 rearAxlePos = (Vector2)transform.position - (Vector2)transform.up * axleDistance;
+
+        // 2. Zeptáme se enginu: "Jakou rychlostí letí tyto konkrétní body?"
+        Vector2 frontVelocity = rb.GetPointVelocity(frontAxlePos);
+        Vector2 rearVelocity = rb.GetPointVelocity(rearAxlePos);
+
+        // 3. Vytáhneme z toho jen to klouzání DO BOKU (ignorujeme jízdu dopøedu)
+        float frontLateralSpeed = Vector2.Dot(frontVelocity, transform.right);
+        float rearLateralSpeed = Vector2.Dot(rearVelocity, transform.right);
+
+        // 4. Spoèítáme protisílu (tøení pneumatik), která to klouzání zastaví
+        // Vynásobíme to hmotností auta (rb.mass), aby to fungovalo i pro tìžký Charger
+        Vector2 frontFriction = -transform.right * frontLateralSpeed * frontGrip * rb.mass;
+        Vector2 rearFriction = -transform.right * rearLateralSpeed * rearGrip * rb.mass;
+
+        // 5. APLIKUJEME SÍLU! Neviditelná ruka tlaèí nápravy zpátky do stopy.
+        rb.AddForceAtPosition(frontFriction, frontAxlePos, ForceMode2D.Force);
+        rb.AddForceAtPosition(rearFriction, rearAxlePos, ForceMode2D.Force);
+
         if (rb.linearVelocity.magnitude > maxSpeed)
         {
            
