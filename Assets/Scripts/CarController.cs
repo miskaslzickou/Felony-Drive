@@ -41,7 +41,7 @@ public class CarController : MonoBehaviour
         float forwardSpeed = Vector2.Dot(rb.linearVelocity, transform.up);
         if (throttleInput > 0.1f)
         {
-            if (forwardSpeed >= 0f)
+            if (forwardSpeed >= -0.1f)
             {
                 rb.linearDamping = 0f; // Jedeme - vypínáme odpor
                 rb.AddForce(transform.up * throttleInput * acceleration, ForceMode2D.Force);
