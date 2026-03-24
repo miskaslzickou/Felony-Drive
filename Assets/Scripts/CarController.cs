@@ -1,6 +1,6 @@
 
+using Unity.VisualScripting;
 using UnityEngine;
-
 public class CarController : MonoBehaviour
 {
     private PlayerActions playerActions;
@@ -14,19 +14,24 @@ public class CarController : MonoBehaviour
     public float speed = 0f;
     public float steeringPower = 1f;
     public float brakeForce = 2f;
+    private bool isHandbrake = false;
     public AnimationCurve steeringCurve; // k�ivka pro �pravu s�ly ��zen� v z�vislosti na rychlosti
 
     [Header("Nastaven� n�prav(Gripu)")]
-    public float frontGrip = 5f;
+    public  float frontGrip = 5f;
     public float rearGrip = 2f;
+    private float currRearGrip;
+
     public float axleDistance = 1f;
 
-    [Header("Nastavení efektů")]
+    [Header("Nastavení zvukových efektů")]
+    public AudioClip engineAudioClip;
     private AudioSource audioSrc;
-    public AudioClip audioClip;
-
-
-
+ 
+    [Header("Nastavení vizuálních efektů")]
+    public float driftThreshold = 2f; // Rychlost, při které se spustí efekt driftu
+    public TrailRenderer[] trailRenderers;
+    public ParticleSystem[] driftParticles;
 
     private void Awake()
     {
@@ -35,6 +40,16 @@ public class CarController : MonoBehaviour
        carCollider = GetComponent<Collider2D>();
        rb.mass = weight; //nastaven� hmotnosti auta
        audioSrc= GetComponent<AudioSource>();
+       audioSrc.clip = engineAudioClip;
+       audioSrc.Play();
+       currRearGrip = rearGrip;
+        // předělat ruční brzdu aby byla trochu arkádová
+       playerActions.Car.Handbrake.performed += ctx =>
+        {
+            isHandbrake = ctx.ReadValueAsButton();
+            currRearGrip = isHandbrake ? rearGrip * 0.5f : rearGrip; 
+            rb.linearDamping=brakeForce;
+        };
 
     }
     private void OnEnable()
@@ -52,8 +67,7 @@ public class CarController : MonoBehaviour
     {
         float throttleInput=playerActions.Car.Throttle.ReadValue<float>();
         float steeringInput = playerActions.Car.Turning.ReadValue<float>();
-
-
+       
         float forwardSpeed = Vector2.Dot(rb.linearVelocity, transform.up);
         if (throttleInput > 0.1f)
         {
@@ -89,35 +103,48 @@ public class CarController : MonoBehaviour
         // --- SIMULACE ZVUKU ---
         audioSrc.pitch=1+normalizedSpeed;
 
-
         // --- SIMULACE PNEUMATIK A DRIFTU ---
 
-        // 1. Zjist�me, kde p�esn� ve 2D sv�t� se nach�z� na�e p�edn� a zadn� n�prava
+        // 1. Zjištění lokace přední a zadní nápravy
         Vector2 frontAxlePos = (Vector2)transform.position + (Vector2)transform.up * axleDistance;
         Vector2 rearAxlePos = (Vector2)transform.position - (Vector2)transform.up * axleDistance;
 
-        // 2. Zept�me se enginu: "Jakou rychlost� let� tyto konkr�tn� body?"
+        // 2. Zjištění rychlosti náprav
         Vector2 frontVelocity = rb.GetPointVelocity(frontAxlePos);
         Vector2 rearVelocity = rb.GetPointVelocity(rearAxlePos);
 
-        // 3. Vyt�hneme z toho jen to klouz�n� DO BOKU (ignorujeme j�zdu dop�edu)
+        // 3. Zjištění boční rychlosti náprav 
         float frontLateralSpeed = Vector2.Dot(frontVelocity, transform.right);
         float rearLateralSpeed = Vector2.Dot(rearVelocity, transform.right);
 
-        // 4. Spo��t�me protis�lu (t�en� pneumatik), kter� to klouz�n� zastav�
-        // Vyn�sob�me to hmotnost� auta (rb.mass), aby to fungovalo i pro t�k� Charger
+        // 4. Spočítáme protisílu pneumatik
         Vector2 frontFriction = -transform.right * frontLateralSpeed * frontGrip * rb.mass;
-        Vector2 rearFriction = -transform.right * rearLateralSpeed * rearGrip * rb.mass;
-
-        // 5. APLIKUJEME S�LU! Neviditeln� ruka tla�� n�pravy zp�tky do stopy.
+        Vector2 rearFriction = -transform.right * rearLateralSpeed * currRearGrip * rb.mass;
+        speed = forwardSpeed;
         rb.AddForceAtPosition(frontFriction, frontAxlePos, ForceMode2D.Force);
         rb.AddForceAtPosition(rearFriction, rearAxlePos, ForceMode2D.Force);
+        
+        if (Mathf.Abs(rearLateralSpeed) > driftThreshold)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                trailRenderers[i].emitting = true;
+                if (!driftParticles[i].isPlaying) driftParticles[i].Play();
+            }
+        }
+        else
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                trailRenderers[i].emitting = false;
+                if (driftParticles[i].isPlaying) driftParticles[i].Stop();
+            }
+        }
 
         if (rb.linearVelocity.magnitude > maxSpeed)   
             rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
         
         if(forwardSpeed < -maxReverseSpeed)
-            rb.linearVelocity= rb.linearVelocity.normalized * maxReverseSpeed;
-       
+            rb.linearVelocity= rb.linearVelocity.normalized * maxReverseSpeed;  
     }
 }

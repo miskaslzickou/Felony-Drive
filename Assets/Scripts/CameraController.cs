@@ -8,25 +8,12 @@ public class CameraController : MonoBehaviour
     public float cameraMoveSpeed = 10f;
     public float maxZoomIn = 0.9f;
     public float maxZoomOut = 4.9f;
-    private PlayerActions playerActions;
+
     private void Awake()
     {
-        playerActions = new PlayerActions();
-        playerActions.Camera.Zoom.performed += ctx =>
-        {
-            float zoomInput = ctx.ReadValue<float>();
-            Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - zoomInput, maxZoomIn, maxZoomOut);
-        };
-    }
-    private void OnEnable()
-    {
-        playerActions.Camera.Enable();
+      
     }
 
-    private void OnDisable()
-    {
-        playerActions.Camera.Disable();
-    }
     void LateUpdate()
     {
         if (target == null)

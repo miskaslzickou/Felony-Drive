@@ -23,6 +23,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Handbrake",
+                    "type": "Button",
+                    "id": "83404a06-b563-471a-bfc4-f1a0f8ea406c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -91,56 +100,17 @@
                     "action": "Turning",
                     "isComposite": false,
                     "isPartOfComposite": true
-                }
-            ]
-        },
-        {
-            "name": "Camera",
-            "id": "ce37eeb4-b6af-4ce0-b073-7bbc7fc6fd8f",
-            "actions": [
+                },
                 {
-                    "name": "Zoom",
-                    "type": "Button",
-                    "id": "7f15cb61-5e58-4c06-99db-67397eb0db90",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "1D Axis",
-                    "id": "2c838d9b-60f5-4398-b824-27f6f3cb6974",
-                    "path": "1DAxis",
+                    "name": "",
+                    "id": "ee7fbe60-df12-4019-ae73-0f5593fee656",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Zoom",
-                    "isComposite": true,
+                    "action": "Handbrake",
+                    "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "negative",
-                    "id": "0478562e-154f-4087-afcb-9015b12af783",
-                    "path": "<Mouse>/scroll/down",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Zoom",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "3b7df432-ad32-4fd7-9a29-28083c529bbb",
-                    "path": "<Mouse>/scroll/up",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Zoom",
-                    "isComposite": false,
-                    "isPartOfComposite": true
                 }
             ]
         }
