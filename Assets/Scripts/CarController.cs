@@ -6,26 +6,36 @@ public class CarController : MonoBehaviour
     private PlayerActions playerActions;
     private Rigidbody2D rb;
     private Collider2D carCollider;
-    [Header("Fyzikální hodnoty")]
+    [Header("Fyzikï¿½lnï¿½ hodnoty")]
     public float maxSpeed = 10f;
+    public float maxReverseSpeed=10f;
     public float acceleration = 5f;
     public float weight = 1f;
     public float speed = 0f;
     public float steeringPower = 1f;
     public float brakeForce = 2f;
-    public AnimationCurve steeringCurve; // køivka pro úpravu síly øízení v závislosti na rychlosti
+    public AnimationCurve steeringCurve; // kï¿½ivka pro ï¿½pravu sï¿½ly ï¿½ï¿½zenï¿½ v zï¿½vislosti na rychlosti
 
-    [Header("Nastavení náprav(Gripu)")]
+    [Header("Nastavenï¿½ nï¿½prav(Gripu)")]
     public float frontGrip = 5f;
     public float rearGrip = 2f;
     public float axleDistance = 1f;
 
+    [Header("NastavenÃ­ efektÅ¯")]
+    private AudioSource audioSrc;
+    public AudioClip audioClip;
+
+
+
+
     private void Awake()
     {
-       playerActions = new PlayerActions(); //importování ovládání 
+       playerActions = new PlayerActions(); //importovï¿½nï¿½ ovlï¿½dï¿½nï¿½ 
        rb = GetComponent<Rigidbody2D>();
        carCollider = GetComponent<Collider2D>();
-        rb.mass = weight; //nastavení hmotnosti auta
+       rb.mass = weight; //nastavenï¿½ hmotnosti auta
+       audioSrc= GetComponent<AudioSource>();
+
     }
     private void OnEnable()
     {
@@ -49,7 +59,7 @@ public class CarController : MonoBehaviour
         {
             if (forwardSpeed >= -0.1f)
             {
-                rb.linearDamping = 0f; // Jedeme - vypínáme odpor
+                rb.linearDamping = 0f; // Jedeme - vypï¿½nï¿½me odpor
                 rb.AddForce(transform.up * throttleInput * acceleration, ForceMode2D.Force);
             }
             else
@@ -64,7 +74,7 @@ public class CarController : MonoBehaviour
         }
         else
         {
-            rb.linearDamping = 2.5f; // Pustili jsme plyn - brzdíme motorem
+            rb.linearDamping = 2.5f; // Pustili jsme plyn - brzdï¿½me motorem
         }
 
         
@@ -76,34 +86,38 @@ public class CarController : MonoBehaviour
             rb.AddTorque(steeringInput * steeringPower* speedFactor * Mathf.Sign(forwardSpeed));
         }
 
+        // --- SIMULACE ZVUKU ---
+        audioSrc.pitch=1+normalizedSpeed;
+
+
         // --- SIMULACE PNEUMATIK A DRIFTU ---
 
-        // 1. Zjistíme, kde pøesnì ve 2D svìtì se nachází naše pøední a zadní náprava
+        // 1. Zjistï¿½me, kde pï¿½esnï¿½ ve 2D svï¿½tï¿½ se nachï¿½zï¿½ naï¿½e pï¿½ednï¿½ a zadnï¿½ nï¿½prava
         Vector2 frontAxlePos = (Vector2)transform.position + (Vector2)transform.up * axleDistance;
         Vector2 rearAxlePos = (Vector2)transform.position - (Vector2)transform.up * axleDistance;
 
-        // 2. Zeptáme se enginu: "Jakou rychlostí letí tyto konkrétní body?"
+        // 2. Zeptï¿½me se enginu: "Jakou rychlostï¿½ letï¿½ tyto konkrï¿½tnï¿½ body?"
         Vector2 frontVelocity = rb.GetPointVelocity(frontAxlePos);
         Vector2 rearVelocity = rb.GetPointVelocity(rearAxlePos);
 
-        // 3. Vytáhneme z toho jen to klouzání DO BOKU (ignorujeme jízdu dopøedu)
+        // 3. Vytï¿½hneme z toho jen to klouzï¿½nï¿½ DO BOKU (ignorujeme jï¿½zdu dopï¿½edu)
         float frontLateralSpeed = Vector2.Dot(frontVelocity, transform.right);
         float rearLateralSpeed = Vector2.Dot(rearVelocity, transform.right);
 
-        // 4. Spoèítáme protisílu (tøení pneumatik), která to klouzání zastaví
-        // Vynásobíme to hmotností auta (rb.mass), aby to fungovalo i pro tìžký Charger
+        // 4. Spoï¿½ï¿½tï¿½me protisï¿½lu (tï¿½enï¿½ pneumatik), kterï¿½ to klouzï¿½nï¿½ zastavï¿½
+        // Vynï¿½sobï¿½me to hmotnostï¿½ auta (rb.mass), aby to fungovalo i pro tï¿½kï¿½ Charger
         Vector2 frontFriction = -transform.right * frontLateralSpeed * frontGrip * rb.mass;
         Vector2 rearFriction = -transform.right * rearLateralSpeed * rearGrip * rb.mass;
 
-        // 5. APLIKUJEME SÍLU! Neviditelná ruka tlaèí nápravy zpátky do stopy.
+        // 5. APLIKUJEME Sï¿½LU! Neviditelnï¿½ ruka tlaï¿½ï¿½ nï¿½pravy zpï¿½tky do stopy.
         rb.AddForceAtPosition(frontFriction, frontAxlePos, ForceMode2D.Force);
         rb.AddForceAtPosition(rearFriction, rearAxlePos, ForceMode2D.Force);
 
-        if (rb.linearVelocity.magnitude > maxSpeed)
-        {
-           
+        if (rb.linearVelocity.magnitude > maxSpeed)   
             rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
-        }
+        
+        if(forwardSpeed < -maxReverseSpeed)
+            rb.linearVelocity= rb.linearVelocity.normalized * maxReverseSpeed;
        
     }
 }
