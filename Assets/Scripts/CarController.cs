@@ -6,11 +6,13 @@ public class CarController : MonoBehaviour
     private PlayerActions playerActions;
     private Rigidbody2D rb;
     private Collider2D carCollider;
+    [Header("Fyzikální hodnoty")]
     public float maxSpeed = 10f;
     public float acceleration = 5f;
     public float weight = 1f;
     public float speed = 0f;
     public float steeringPower = 1f;
+    public float brakeForce = 2f;
     public AnimationCurve steeringCurve; // køivka pro úpravu síly øízení v závislosti na rychlosti
     private void Awake()
     {
@@ -34,11 +36,32 @@ public class CarController : MonoBehaviour
     {
         float throttleInput=playerActions.Car.Throttle.ReadValue<float>();
         float steeringInput = playerActions.Car.Turning.ReadValue<float>();
-        // TODO  pøidat zde smart linear drag pro actually good akceleraci a brždìní, aby se auto chovalo lépe 
-        // když hráè drží plyn linear drag =0 , když hráè nepouští plyn linear drag = 1, když hráè brzdí linear drag = 2
 
-        rb.AddForce(transform.up * throttleInput *acceleration); //pøidání síly pro pohyb auta
+
         float forwardSpeed = Vector2.Dot(rb.linearVelocity, transform.up);
+        if (throttleInput > 0.1f)
+        {
+            if (forwardSpeed >= 0f)
+            {
+                rb.linearDamping = 0f; // Jedeme - vypínáme odpor
+                rb.AddForce(transform.up * throttleInput * acceleration, ForceMode2D.Force);
+            }
+            else
+            rb.linearDamping = 5f;
+        }
+        else if (throttleInput < -0.1)
+        {
+            if(forwardSpeed>0.1f)
+            rb.linearDamping = brakeForce;
+            else
+            rb.AddForce(transform.up * throttleInput * acceleration, ForceMode2D.Force);
+        }
+        else
+        {
+            rb.linearDamping = 2.5f; // Pustili jsme plyn - brzdíme motorem
+        }
+
+        
         float normalizedSpeed = Mathf.Clamp01(Mathf.Abs(forwardSpeed) / maxSpeed);
         float speedFactor = steeringCurve.Evaluate(Mathf.Abs(normalizedSpeed));
         
