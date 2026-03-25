@@ -67,6 +67,15 @@ public class CarController : MonoBehaviour
     {
         playerActions.Car.Disable();
     }
+    [System.Serializable]
+    public class Gear
+    {
+        public string gearName;
+        public float gearSpeed;
+        public float accelerationPower;
+        public float minRpm;
+        public float maxRpm;
+    }
 
     private void FixedUpdate()
     {
