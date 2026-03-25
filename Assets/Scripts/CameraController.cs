@@ -28,7 +28,7 @@ public class CameraController : MonoBehaviour
             return;
         }
 
-        float speedPerc = Vector2.Dot(rb.linearVelocity, transform.up) / maxSpeed;
+        float speedPerc = rb.linearVelocity.magnitude/ maxSpeed;
 
         float targetZoom = Mathf.Lerp(maxZoomIn, maxZoomOut, speedPerc);
         float currOffsetDist =Mathf.Lerp(0f,maxForwardOffset,speedPerc);
