@@ -35,7 +35,7 @@ public class CameraController : MonoBehaviour
         Vector3 currOffset =target.transform.up * currOffsetDist+offset; //Sečtení nastaveného offsetu s dynamickým posunem dopředu
         Vector3 desiredPosition = target.position + currOffset;
        
-        
+  
 
         transform.position = Vector3.MoveTowards(transform.position, desiredPosition, cameraMoveSpeed * Time.deltaTime);
         Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, targetZoom, Time.deltaTime * zoomSmoothness);

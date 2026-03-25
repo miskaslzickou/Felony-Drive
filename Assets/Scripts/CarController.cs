@@ -123,6 +123,8 @@ public class CarController : MonoBehaviour
         Vector2 frontAxlePos = (Vector2)transform.position + (Vector2)transform.up * axleDistance;
         Vector2 rearAxlePos = (Vector2)transform.position - (Vector2)transform.up * axleDistance;
 
+        Debug.DrawLine(transform.position, frontAxlePos, Color.red);
+        Debug.DrawLine(transform.position, rearAxlePos, Color.blue);
         // 2. Zjištění rychlosti náprav
         Vector2 frontVelocity = rb.GetPointVelocity(frontAxlePos);
         Vector2 rearVelocity = rb.GetPointVelocity(rearAxlePos);
