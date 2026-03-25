@@ -50,6 +50,11 @@ public class CarController : MonoBehaviour
             currRearGrip = isHandbrake ? rearGrip * 0.5f : rearGrip; 
             rb.linearDamping=brakeForce;
         };
+        playerActions.Car.Handbrake.canceled += ctx => { 
+            currRearGrip=rearGrip;
+           
+        };
+        
 
     }
     private void OnEnable()
