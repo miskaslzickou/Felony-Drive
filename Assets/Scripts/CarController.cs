@@ -138,7 +138,7 @@ public class CarController : MonoBehaviour
         rb.AddForceAtPosition(frontFriction, frontAxlePos, ForceMode2D.Force);
         rb.AddForceAtPosition(rearFriction, rearAxlePos, ForceMode2D.Force);
         
-        if (Mathf.Abs(rearLateralSpeed) > driftThreshold)
+        if (Mathf.Abs(rearLateralSpeed) > driftThreshold || isHandbrake)
         {
             for (int i = 0; i < 2; i++)
             {
