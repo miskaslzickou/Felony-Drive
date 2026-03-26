@@ -21,7 +21,6 @@ public class CarController : MonoBehaviour
     public  float frontGrip = 5f;
     public float rearGrip = 2f;
     private float currRearGrip;
-
     public float axleDistance = 1f;
 
     [Header("Nastavení zvukových efektů")]
@@ -71,6 +70,7 @@ public class CarController : MonoBehaviour
     {
         playerActions.Car.Disable();
     }
+    
     [System.Serializable]
     public class Gear
     {
@@ -86,24 +86,33 @@ public class CarController : MonoBehaviour
        
         float throttleInput=playerActions.Car.Throttle.ReadValue<float>();
         float steeringInput = playerActions.Car.Turning.ReadValue<float>();
-       
+
         float forwardSpeed = Vector2.Dot(rb.linearVelocity, transform.up);
+        //potřeba překopat tyto ify aby byli více smysluplné 
         if (throttleInput > 0.1f)
         {
             if (forwardSpeed >= -0.1f)
             {
                 rb.linearDamping = 0f; // Jedeme - vyp�n�me odpor
                 rb.AddForce(transform.up * throttleInput * acceleration, ForceMode2D.Force);
+              
             }
             else
-            rb.linearDamping = 5f;
+                rb.linearDamping = 5f;
         }
         else if (throttleInput < -0.1)
         {
-            if(forwardSpeed>0.1f)
-            rb.linearDamping = brakeForce;
+
+            if (forwardSpeed > 0.1f)
+            {
+              
+                rb.linearDamping = brakeForce;
+            }
             else
-            rb.AddForce(transform.up * throttleInput * acceleration, ForceMode2D.Force);
+            {
+             
+                rb.AddForce(transform.up * throttleInput * acceleration, ForceMode2D.Force);
+            }
         }
         else
         {
@@ -121,7 +130,7 @@ public class CarController : MonoBehaviour
 
         // --- SIMULACE ZVUKU ---
         audioSrc.pitch=1+normalizedSpeed;
-
+      
         // --- SIMULACE PNEUMATIK A DRIFTU ---
 
         // 1. Zjištění lokace přední a zadní nápravy
