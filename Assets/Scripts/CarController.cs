@@ -32,6 +32,7 @@ public class CarController : MonoBehaviour
     public float driftThreshold = 2f; // Rychlost, při které se spustí efekt driftu
     public TrailRenderer[] trailRenderers;
     public ParticleSystem[] driftParticles;
+    public Animator animator;
 
     private void Awake()
     {
@@ -49,9 +50,12 @@ public class CarController : MonoBehaviour
             isHandbrake = ctx.ReadValueAsButton();
             currRearGrip = isHandbrake ? rearGrip * 0.5f : rearGrip; 
             rb.linearDamping=brakeForce;
+            animator.SetBool("isBraking", true);
         };
         playerActions.Car.Handbrake.canceled += ctx => { 
             currRearGrip=rearGrip;
+            isHandbrake=false;
+            animator.SetBool("isBraking", false);
            
         };
         
@@ -79,6 +83,7 @@ public class CarController : MonoBehaviour
 
     private void FixedUpdate()
     {
+       
         float throttleInput=playerActions.Car.Throttle.ReadValue<float>();
         float steeringInput = playerActions.Car.Turning.ReadValue<float>();
        
