@@ -17,7 +17,7 @@ public class CameraController : MonoBehaviour
     private void Awake()
     {
       rb = target.GetComponent<Rigidbody2D>();
-      maxSpeed=target.GetComponent<CarController>().maxSpeed; //Získání maxSpeed z CarControlleru pro správné nastavení zoomu
+      maxSpeed=target.GetComponent<CarControllerV2>().maxSpeed; //Získání maxSpeed z CarControlleru pro správné nastavení zoomu
     }
 
     void LateUpdate()

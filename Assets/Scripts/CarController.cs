@@ -1,5 +1,3 @@
-
-using Unity.VisualScripting;
 using UnityEngine;
 public class CarController : MonoBehaviour
 {
@@ -14,6 +12,7 @@ public class CarController : MonoBehaviour
     public float speed = 0f;
     public float steeringPower = 1f;
     public float brakeForce = 2f;
+    public float cruiseDamping = 1.5f; // odpor při jízdě bez plynu
     private bool isHandbrake = false;
     public AnimationCurve steeringCurve; // k�ivka pro �pravu s�ly ��zen� v z�vislosti na rychlosti
 
@@ -84,7 +83,7 @@ public class CarController : MonoBehaviour
     private void FixedUpdate()
     {
        
-        float throttleInput=playerActions.Car.Throttle.ReadValue<float>();
+        float throttleInput=playerActions.Car.Throttle.ReadValue<float>(); 
         float steeringInput = playerActions.Car.Turning.ReadValue<float>();
 
         float forwardSpeed = Vector2.Dot(rb.linearVelocity, transform.up);
@@ -116,7 +115,7 @@ public class CarController : MonoBehaviour
         }
         else
         {
-            rb.linearDamping = 2.5f; // Pustili jsme plyn - brzd�me motorem
+            rb.linearDamping = cruiseDamping; // Pustili jsme plyn - brzd�me motorem
         }
 
         
