@@ -103,17 +103,26 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": ""Turning"",
-                    ""type"": ""Button"",
+                    ""type"": ""Value"",
                     ""id"": ""7e9048a9-e651-4a7d-b97c-5d795f61be64"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Handbrake"",
+                    ""type"": ""Button"",
+                    ""id"": ""83404a06-b563-471a-bfc4-f1a0f8ea406c"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Handbrake"",
+                    ""name"": ""Shifting"",
                     ""type"": ""Button"",
-                    ""id"": ""83404a06-b563-471a-bfc4-f1a0f8ea406c"",
+                    ""id"": ""bf91b385-7f30-44c4-972c-44cf8de9703b"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -197,6 +206,39 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""action"": ""Handbrake"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""f3ff44e3-910d-4013-b26b-9234ced46cce"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shifting"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""bc586dcb-00c5-4973-ab60-6165cb3f0523"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shifting"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""b1bddc7b-bdc1-4bf6-ae51-1ace378da644"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shifting"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         }
@@ -208,6 +250,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_Car_Throttle = m_Car.FindAction("Throttle", throwIfNotFound: true);
         m_Car_Turning = m_Car.FindAction("Turning", throwIfNotFound: true);
         m_Car_Handbrake = m_Car.FindAction("Handbrake", throwIfNotFound: true);
+        m_Car_Shifting = m_Car.FindAction("Shifting", throwIfNotFound: true);
     }
 
     ~@PlayerActions()
@@ -291,6 +334,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Car_Throttle;
     private readonly InputAction m_Car_Turning;
     private readonly InputAction m_Car_Handbrake;
+    private readonly InputAction m_Car_Shifting;
     /// <summary>
     /// Provides access to input actions defined in input action map "Car".
     /// </summary>
@@ -314,6 +358,10 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Car/Handbrake".
         /// </summary>
         public InputAction @Handbrake => m_Wrapper.m_Car_Handbrake;
+        /// <summary>
+        /// Provides access to the underlying input action "Car/Shifting".
+        /// </summary>
+        public InputAction @Shifting => m_Wrapper.m_Car_Shifting;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -349,6 +397,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Handbrake.started += instance.OnHandbrake;
             @Handbrake.performed += instance.OnHandbrake;
             @Handbrake.canceled += instance.OnHandbrake;
+            @Shifting.started += instance.OnShifting;
+            @Shifting.performed += instance.OnShifting;
+            @Shifting.canceled += instance.OnShifting;
         }
 
         /// <summary>
@@ -369,6 +420,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Handbrake.started -= instance.OnHandbrake;
             @Handbrake.performed -= instance.OnHandbrake;
             @Handbrake.canceled -= instance.OnHandbrake;
+            @Shifting.started -= instance.OnShifting;
+            @Shifting.performed -= instance.OnShifting;
+            @Shifting.canceled -= instance.OnShifting;
         }
 
         /// <summary>
@@ -430,5 +484,12 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnHandbrake(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Shifting" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnShifting(InputAction.CallbackContext context);
     }
 }

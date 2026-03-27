@@ -17,17 +17,26 @@
                 },
                 {
                     "name": "Turning",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "7e9048a9-e651-4a7d-b97c-5d795f61be64",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Handbrake",
+                    "type": "Button",
+                    "id": "83404a06-b563-471a-bfc4-f1a0f8ea406c",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Handbrake",
+                    "name": "Shifting",
                     "type": "Button",
-                    "id": "83404a06-b563-471a-bfc4-f1a0f8ea406c",
+                    "id": "bf91b385-7f30-44c4-972c-44cf8de9703b",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -111,6 +120,39 @@
                     "action": "Handbrake",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "f3ff44e3-910d-4013-b26b-9234ced46cce",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shifting",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "bc586dcb-00c5-4973-ab60-6165cb3f0523",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shifting",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "b1bddc7b-bdc1-4bf6-ae51-1ace378da644",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shifting",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         }

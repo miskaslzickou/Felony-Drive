@@ -3,7 +3,7 @@ Hra je o simulaci řízení auta na styl [GTA 1](https://cs.wikipedia.org/wiki/G
 ## Nástroje a technologie :computer:
 - **Herní engine:** Unity (s využitím Universal Render Pipeline pro moderní 2D nasvícení)
 - **Programování:** C# (využití nového Unity Input Systemu pro plynulé ovládání)
-- **Grafika:** Aseprite (vlastní pixel-artové modely a animace)
+- **Grafika:** Libreprite (vlastní pixel-artové modely a animace)
 - **Verzování:** Git
 ## Roadmap
 - [x] Semi-realistická fyzika vozidla :car:
