@@ -14,7 +14,7 @@ public class CarControllerV2 : MonoBehaviour
     public float maxReverseSpeed = 10f;
     public float acceleration = 10f;
     public float weight = 1f;
-    public float speed = 0f;
+    public float speed => rb.linearVelocity.magnitude;
     public float steeringPower = 3f;
     public float brakeForce = 2f;
     public float cruiseDamping = 1.5f; // odpor při jízdě bez plynu
@@ -82,12 +82,21 @@ public class CarControllerV2 : MonoBehaviour
     {
         if(throttleInput==1)
         rb.AddForce(transform.up * throttleInput * acceleration, ForceMode2D.Force);
-        
-        speed = rb.linearVelocity.magnitude;
+         else if(throttleInput==-1)
+        {
+            rb.linearDamping = brakeForce;
+            isBraking = true;
+        }
+        else
+        {
+            rb.linearDamping = cruiseDamping;
+            isBraking = false;
+        }
 
 
-        
-        if (rb.linearVelocity.magnitude > maxSpeed)
+
+
+        if (speed > maxSpeed)
             rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
 
         if (forwardSpeed < -maxReverseSpeed)
