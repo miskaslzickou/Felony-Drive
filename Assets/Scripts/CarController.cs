@@ -97,7 +97,9 @@ public class CarController : MonoBehaviour
               
             }
             else
+            {
                 rb.linearDamping = 5f;
+            } 
         }
         else if (throttleInput < -0.1)
         {

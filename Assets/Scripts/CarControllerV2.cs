@@ -1,7 +1,5 @@
  using UnityEngine;
-[RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(Collider2D))]
-[RequireComponent(typeof(AudioSource))]
+
 
 public class CarControllerV2 : MonoBehaviour
 {
@@ -15,12 +13,14 @@ public class CarControllerV2 : MonoBehaviour
     public float acceleration = 10f;
     public float weight = 1f;
     public float speed => rb.linearVelocity.magnitude;
-    public float steeringPower = 3f;
+    public float steeringPower = 5f;
     public float brakeForce = 2f;
     public float cruiseDamping = 1.5f; // odpor při jízdě bez plynu
     private bool isHandbrake = false;
     private bool isBraking = false;
-
+    private float throttleInput;
+    private float steeringInput;
+    private float steerAngle;
     private float forwardSpeed => Vector2.Dot(rb.linearVelocity, transform.up);
     private float normalizedSpeed => Mathf.Clamp01(Mathf.Abs(forwardSpeed) / maxSpeed);
 
@@ -31,20 +31,22 @@ public class CarControllerV2 : MonoBehaviour
     public float rearGrip = 2.5f;
     private float currRearGrip;
     public float axleDistance = 0.75f;
+    private float rearLateralSpeed;
 
     [Header("Nastavení zvukových efektů")]
     public AudioClip engineAudioClip;
-    private AudioSource audioSrc;
-    
+    [SerializeField]private AudioSource engineAudioSrc;
+    public AudioClip honkAudioClip;
+    [SerializeField]private AudioSource honkAudioSrc;
+    private bool isHonking = false;
+
     [Header("Nastavení vizuálních efektů")]
     public float driftThreshold = 2f; // Rychlost, při které se spustí efekt driftu
     public TrailRenderer[] trailRenderers;
     public ParticleSystem[] driftParticles;
     public Animator animator;
     
-    private float throttleInput;
-    private float steeringInput;
-
+ 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private void Awake()
     {
@@ -52,10 +54,14 @@ public class CarControllerV2 : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         carCollider = GetComponent<Collider2D>();
         rb.mass = weight; //nastaven� hmotnosti auta
-        audioSrc = GetComponent<AudioSource>();
-        audioSrc.clip = engineAudioClip;
-        audioSrc.Play();
+     
+        engineAudioSrc.clip = engineAudioClip;
+        engineAudioSrc.Play();
+        honkAudioSrc.clip = honkAudioClip;
+
+
         currRearGrip = rearGrip;
+      
         playerActions.Car.Handbrake.performed += ctx =>
         {
             isHandbrake = ctx.ReadValueAsButton();
@@ -66,8 +72,21 @@ public class CarControllerV2 : MonoBehaviour
         playerActions.Car.Handbrake.canceled += ctx => {
             currRearGrip = rearGrip;
             isHandbrake = false;
-            
+            rb.linearDamping = 0f;
 
+
+        };
+        // dodělat troubení s držením tlačítka, aby se přehrávalo dokud je držíš
+        playerActions.Car.Honk.performed += ctx => {
+            isHonking = true;
+            if (!honkAudioSrc.isPlaying) honkAudioSrc.Play();
+            
+        };
+
+        // Když tlačítko pustíš, přestane troubit
+        playerActions.Car.Honk.canceled += ctx => {
+            isHonking = false;
+            honkAudioSrc.Stop();
         };
     }
     private void OnEnable()
@@ -78,11 +97,17 @@ public class CarControllerV2 : MonoBehaviour
     {
         playerActions.Car.Disable();
     }
+    
     void UpdateSpeed()
     {
-        if(throttleInput==1)
-        rb.AddForce(transform.up * throttleInput * acceleration, ForceMode2D.Force);
-         else if(throttleInput==-1)
+
+
+        if (throttleInput == 1)
+        {
+            rb.linearDamping = 0f;
+            rb.AddForce(transform.up * throttleInput * acceleration, ForceMode2D.Force);
+        }
+        else if (throttleInput == -1)
         {
             rb.linearDamping = brakeForce;
             isBraking = true;
@@ -92,27 +117,48 @@ public class CarControllerV2 : MonoBehaviour
             rb.linearDamping = cruiseDamping;
             isBraking = false;
         }
+        
+        if (Mathf.Abs(forwardSpeed) > 0.1f)
+        {
+            rb.AddTorque(steeringInput * steeringPower *normalizedSpeed * Mathf.Sign(forwardSpeed));
+        }
+        // testoval jsem různé fyzikální způsoby magic formula, ale toto i když to je daleko od dokonalého má nejvíc konzistentní chování 
+        
+        Vector2 frontAxlePos = (Vector2)transform.position + (Vector2)transform.up * axleDistance;
+        Vector2 rearAxlePos = (Vector2)transform.position - (Vector2)transform.up * axleDistance;
 
+        Debug.DrawLine(transform.position, frontAxlePos, Color.red);
+        Debug.DrawLine(transform.position, rearAxlePos, Color.blue);
+        // 2. Zjištění rychlosti náprav
+        Vector2 frontVelocity = rb.GetPointVelocity(frontAxlePos);
+        Vector2 rearVelocity = rb.GetPointVelocity(rearAxlePos);
 
+        // 3. Zjištění boční rychlosti náprav 
+        float frontLateralSpeed = Vector2.Dot(frontVelocity, transform.right);
+        rearLateralSpeed = Vector2.Dot(rearVelocity, transform.right);
 
+        // 4. Spočítáme protisílu pneumatik
+        Vector2 frontFriction = -transform.right * frontLateralSpeed * frontGrip * rb.mass;
+        Vector2 rearFriction = -transform.right * rearLateralSpeed * currRearGrip * rb.mass;
+     
+        rb.AddForceAtPosition(frontFriction, frontAxlePos, ForceMode2D.Force);
+        rb.AddForceAtPosition(rearFriction, rearAxlePos, ForceMode2D.Force);
 
         if (speed > maxSpeed)
             rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
 
         if (forwardSpeed < -maxReverseSpeed)
             rb.linearVelocity = rb.linearVelocity.normalized * maxReverseSpeed;
-
-    }
-    void UpdateSteering() {
-        if(Mathf.Abs(forwardSpeed) > 0.1f)
+        if (Mathf.Abs(steeringInput) < 0.05f && Mathf.Abs(rb.angularVelocity) < 0.5f)
         {
-            rb.AddTorque(steeringInput * steeringPower * Mathf.Sign(forwardSpeed));
+            rb.angularVelocity = 0f;
         }
-        
+        //Debug.Log($"Speed: {rb.linearVelocity.magnitude} | Angular: {rb.angularVelocity}");
     }
+   
     void UpdateVisuals()
     {
-        if (isHandbrake)
+        if (isHandbrake|| Mathf.Abs(rearLateralSpeed) >driftThreshold)
         {
             for (int i = 0; i < 2; i++)
             {
@@ -134,7 +180,8 @@ public class CarControllerV2 : MonoBehaviour
     }
     void UpdateAudio()
     {
-        audioSrc.pitch = 0.5f + normalizedSpeed * 1.5f; // Základní pitch 0.5, který se zvyšuje s rychlostí
+        engineAudioSrc.pitch = 1f + Mathf.Clamp01(normalizedSpeed); // Základní pitch 0.5, který se zvyšuje s rychlostí
+    
     }
     void GetInputs() 
     {   
@@ -151,6 +198,7 @@ public class CarControllerV2 : MonoBehaviour
     void FixedUpdate()
     {   
         UpdateSpeed();
-        UpdateSteering();
+        
+    
     }
 }

@@ -127,6 +127,15 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Honk"",
+                    ""type"": ""Button"",
+                    ""id"": ""dbaac109-c297-4b30-8dbd-b1a4ed1610ea"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -239,6 +248,17 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""action"": ""Shifting"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1e23b1e8-1157-4df0-98cb-f77aa88a8ffe"",
+                    ""path"": ""<Keyboard>/h"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Honk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -251,6 +271,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_Car_Turning = m_Car.FindAction("Turning", throwIfNotFound: true);
         m_Car_Handbrake = m_Car.FindAction("Handbrake", throwIfNotFound: true);
         m_Car_Shifting = m_Car.FindAction("Shifting", throwIfNotFound: true);
+        m_Car_Honk = m_Car.FindAction("Honk", throwIfNotFound: true);
     }
 
     ~@PlayerActions()
@@ -335,6 +356,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Car_Turning;
     private readonly InputAction m_Car_Handbrake;
     private readonly InputAction m_Car_Shifting;
+    private readonly InputAction m_Car_Honk;
     /// <summary>
     /// Provides access to input actions defined in input action map "Car".
     /// </summary>
@@ -362,6 +384,10 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Car/Shifting".
         /// </summary>
         public InputAction @Shifting => m_Wrapper.m_Car_Shifting;
+        /// <summary>
+        /// Provides access to the underlying input action "Car/Honk".
+        /// </summary>
+        public InputAction @Honk => m_Wrapper.m_Car_Honk;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -400,6 +426,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Shifting.started += instance.OnShifting;
             @Shifting.performed += instance.OnShifting;
             @Shifting.canceled += instance.OnShifting;
+            @Honk.started += instance.OnHonk;
+            @Honk.performed += instance.OnHonk;
+            @Honk.canceled += instance.OnHonk;
         }
 
         /// <summary>
@@ -423,6 +452,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Shifting.started -= instance.OnShifting;
             @Shifting.performed -= instance.OnShifting;
             @Shifting.canceled -= instance.OnShifting;
+            @Honk.started -= instance.OnHonk;
+            @Honk.performed -= instance.OnHonk;
+            @Honk.canceled -= instance.OnHonk;
         }
 
         /// <summary>
@@ -491,5 +523,12 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnShifting(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Honk" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnHonk(InputAction.CallbackContext context);
     }
 }
