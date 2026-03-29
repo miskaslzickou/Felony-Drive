@@ -120,7 +120,7 @@ public class CarControllerV2 : MonoBehaviour
         
         if (Mathf.Abs(forwardSpeed) > 0.1f)
         {
-            rb.AddTorque(steeringInput * steeringPower *normalizedSpeed * Mathf.Sign(forwardSpeed));
+            rb.AddTorque(steeringInput * steeringPower  * Mathf.Sign(forwardSpeed));
         }
         // testoval jsem různé fyzikální způsoby magic formula, ale toto i když to je daleko od dokonalého má nejvíc konzistentní chování 
         
