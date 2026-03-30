@@ -8,7 +8,6 @@ ScriptedImporter:
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 62a9f0aa5b59740cfbadc7e5f9823bb0, type: 3}
-  importerVersion: 2
   textureImporterSettings:
     alphaSource: 1
     mipMapMode: 0
@@ -84,8 +83,6 @@ ScriptedImporter:
     generateAnimationClips: 1
     addSortingGroup: 1
     addShadowCasters: 0
-    generateIndividualEvents: 1
-    generateSpriteAtlas: 1
   asepriteImporterSettings:
     fileImportMode: 0
     importHiddenLayers: 0
@@ -99,8 +96,6 @@ ScriptedImporter:
     generateAnimationClips: 1
     addSortingGroup: 1
     addShadowCasters: 0
-    generateIndividualEvents: 1
-    generateSpriteAtlas: 1
   importFileNodeState: 1
   platformSettingsDirtyTick: 639104148263985252
   textureAssetName: 
@@ -569,35 +564,8 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  tileSetImportData:
-  - name: Layer 1
-    originalName: 
-    pivot: {x: 0.5, y: 0.5}
-    alignment: 9
-    border: {x: 0, y: 0, z: 0, w: 0}
-    customData: 
-    rect:
-      serializedVersion: 2
-      x: 0
-      y: 0
-      width: 1280
-      height: 256
-    spriteID: c1765d71bab70264db651d00637758ac
-    spriteBone: []
-    spriteOutline: []
-    vertices: []
-    spritePhysicsOutline: []
-    indices: 
-    edges: []
-    tessellationDetail: 0
-    uvTransform: {x: 0, y: 0}
   asepriteLayers:
   - layerIndex: 0
-    uuid:
-      value0: 4287466680
-      value1: 0
-      value2: 0
-      value3: 0
     guid: 0
     name: Layer 1
     layerFlags: 3
@@ -609,15 +577,12 @@ ScriptedImporter:
       additiveSortOrder: 0
       cellRect:
         x: 0
-        y: 0
+        y: 128
         width: 1280
         height: 256
       spriteId: c1765d71bab70264db651d00637758ac
     linkedCells: []
-    tileCells: []
-    tileSetIndex: 0
     parentIndex: -1
-  tileSets: []
   platformSettings:
   - name: DefaultTexturePlatform
     overridden: 0
@@ -646,5 +611,4 @@ ScriptedImporter:
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 1280, y: 256}
-  previousTextureSize: {x: 2048, y: 256}
+  canvasSize: {x: 1280, y: 384}

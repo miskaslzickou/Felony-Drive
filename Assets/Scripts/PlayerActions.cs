@@ -136,6 +136,15 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Engine Start/Stop"",
+                    ""type"": ""Button"",
+                    ""id"": ""67f37baf-d2b5-4058-9885-14e22b24695f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -259,6 +268,17 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""action"": ""Honk"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f718a40e-43e3-4d76-afc1-5a92a4b25713"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Engine Start/Stop"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -272,6 +292,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_Car_Handbrake = m_Car.FindAction("Handbrake", throwIfNotFound: true);
         m_Car_Shifting = m_Car.FindAction("Shifting", throwIfNotFound: true);
         m_Car_Honk = m_Car.FindAction("Honk", throwIfNotFound: true);
+        m_Car_EngineStartStop = m_Car.FindAction("Engine Start/Stop", throwIfNotFound: true);
     }
 
     ~@PlayerActions()
@@ -357,6 +378,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Car_Handbrake;
     private readonly InputAction m_Car_Shifting;
     private readonly InputAction m_Car_Honk;
+    private readonly InputAction m_Car_EngineStartStop;
     /// <summary>
     /// Provides access to input actions defined in input action map "Car".
     /// </summary>
@@ -388,6 +410,10 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Car/Honk".
         /// </summary>
         public InputAction @Honk => m_Wrapper.m_Car_Honk;
+        /// <summary>
+        /// Provides access to the underlying input action "Car/EngineStartStop".
+        /// </summary>
+        public InputAction @EngineStartStop => m_Wrapper.m_Car_EngineStartStop;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -429,6 +455,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Honk.started += instance.OnHonk;
             @Honk.performed += instance.OnHonk;
             @Honk.canceled += instance.OnHonk;
+            @EngineStartStop.started += instance.OnEngineStartStop;
+            @EngineStartStop.performed += instance.OnEngineStartStop;
+            @EngineStartStop.canceled += instance.OnEngineStartStop;
         }
 
         /// <summary>
@@ -455,6 +484,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Honk.started -= instance.OnHonk;
             @Honk.performed -= instance.OnHonk;
             @Honk.canceled -= instance.OnHonk;
+            @EngineStartStop.started -= instance.OnEngineStartStop;
+            @EngineStartStop.performed -= instance.OnEngineStartStop;
+            @EngineStartStop.canceled -= instance.OnEngineStartStop;
         }
 
         /// <summary>
@@ -530,5 +562,12 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnHonk(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Engine Start/Stop" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnEngineStartStop(InputAction.CallbackContext context);
     }
 }

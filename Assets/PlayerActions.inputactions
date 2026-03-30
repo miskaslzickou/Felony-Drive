@@ -50,6 +50,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Engine Start/Stop",
+                    "type": "Button",
+                    "id": "67f37baf-d2b5-4058-9885-14e22b24695f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -171,6 +180,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Honk",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f718a40e-43e3-4d76-afc1-5a92a4b25713",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Engine Start/Stop",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

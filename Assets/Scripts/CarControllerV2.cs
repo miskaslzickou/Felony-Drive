@@ -21,6 +21,7 @@ public class CarControllerV2 : MonoBehaviour
     private float throttleInput;
     private float steeringInput;
     private float steerAngle;
+    private bool engineStarted;
     private float forwardSpeed => Vector2.Dot(rb.linearVelocity, transform.up);
     private float normalizedSpeed => Mathf.Clamp01(Mathf.Abs(forwardSpeed) / maxSpeed);
 
@@ -88,6 +89,9 @@ public class CarControllerV2 : MonoBehaviour
             isHonking = false;
             honkAudioSrc.Stop();
         };
+
+        playerActions.Car.EngineStartStop.performed += ctx =>EngineStart();
+
     }
     private void OnEnable()
     {
@@ -97,10 +101,23 @@ public class CarControllerV2 : MonoBehaviour
     {
         playerActions.Car.Disable();
     }
-    
+    private void EngineStart()
+    {
+        if (engineStarted)
+        {
+            engineAudioSrc.Stop();
+        }
+        else
+        {
+            engineAudioSrc.Play();
+
+        }
+        engineStarted=!engineStarted;
+    }
     void UpdateSpeed()
     {
-
+        if (!engineStarted)
+            return;
 
         if (throttleInput == 1)
         {
