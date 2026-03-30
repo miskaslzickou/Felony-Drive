@@ -116,15 +116,14 @@ public class CarControllerV2 : MonoBehaviour
     }
     void UpdateSpeed()
     {
-        if (!engineStarted)
-            return;
+       
 
-        if (throttleInput == 1)
+        if (throttleInput == 1 && engineStarted)
         {
             rb.linearDamping = 0f;
             rb.AddForce(transform.up * throttleInput * acceleration, ForceMode2D.Force);
         }
-        else if (throttleInput == -1)
+        else if (throttleInput == -1 && !engineStarted)
         {
             rb.linearDamping = brakeForce;
             isBraking = true;
