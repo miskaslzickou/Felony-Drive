@@ -1,0 +1,7 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="VisualElement" style="flex-grow: 1; flex-direction: column; align-content: auto; justify-content: flex-end; flex-shrink: 1; flex-basis: initial; position: relative; width: 100%; height: 100%; align-self: auto; align-items: center; background-size: 100% 100%; flex-wrap: nowrap;">
+        <ui:VisualElement name="Speedometer" style="flex-grow: 0; background-image: url(&quot;project://database/Assets/Sprites/UI%20speedometer.ase?fileID=-8328923581568760697&amp;guid=007f0c4e813f31d4fa951c7255958459&amp;type=3#UI speedometer&quot;); background-size: cover; flex-shrink: 0; align-items: auto; align-content: center; height: 300px; width: 300px; align-self: flex-end; -unity-background-scale-mode: scale-to-fit; -unity-background-image-tint-color: rgb(255, 255, 255);">
+            <ui:VisualElement name="Needle" style="flex-grow: 1; position: relative; background-image: url(&quot;project://database/Assets/Sprites/UI%20speedometer-needle.png?fileID=2800000&amp;guid=f06000625ec802740923d8b7c97511be&amp;type=3#UI speedometer-needle&quot;); -unity-background-scale-mode: scale-to-fit; width: 300px; height: 300px; top: 0%; left: 0%; transform-origin: 38% 49.5%; rotate: 0; translate: -6.5% 19.7%;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

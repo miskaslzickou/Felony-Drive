@@ -23,7 +23,7 @@ public class CarControllerV2 : MonoBehaviour
     private float steerAngle;
     private bool engineStarted;
     private float forwardSpeed => Vector2.Dot(rb.linearVelocity, transform.up);
-    private float normalizedSpeed => Mathf.Clamp01(Mathf.Abs(forwardSpeed) / maxSpeed);
+    public float normalizedSpeed => (rb != null) ? (rb.linearVelocity.magnitude / maxSpeed) : 0f;
 
     //public AnimationCurve steeringCurve; // k�ivka pro �pravu s�ly ��zen� v z�vislosti na rychlosti
 

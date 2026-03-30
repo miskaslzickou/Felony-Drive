@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8756ccc2e89ccdc40b39bbc39ce0efbe
+guid: 007f0c4e813f31d4fa951c7255958459
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -36,7 +36,7 @@ ScriptedImporter:
     spriteMeshType: 1
     alignment: 0
     spritePivot: {x: 0.5, y: 0.5}
-    spritePixelsToUnits: 100
+    spritePixelsToUnits: 256
     spriteBorder: {x: 0, y: 0, z: 0, w: 0}
     spriteGenerateFallbackPhysicsShape: 0
     generateCubemap: 6
@@ -75,13 +75,13 @@ ScriptedImporter:
     fileImportMode: 1
     importHiddenLayers: 0
     layerImportMode: 1
-    defaultPivotSpace: 1
-    defaultPivotAlignment: 0
+    defaultPivotSpace: 0
+    defaultPivotAlignment: 7
     customPivotPosition: {x: 0.5, y: 0.5}
     mosaicPadding: 4
     spritePadding: 0
-    generateModelPrefab: 0
-    generateAnimationClips: 0
+    generateModelPrefab: 1
+    generateAnimationClips: 1
     addSortingGroup: 1
     addShadowCasters: 0
     generateIndividualEvents: 1
@@ -90,19 +90,19 @@ ScriptedImporter:
     fileImportMode: 1
     importHiddenLayers: 0
     layerImportMode: 1
-    defaultPivotSpace: 1
-    defaultPivotAlignment: 0
+    defaultPivotSpace: 0
+    defaultPivotAlignment: 7
     customPivotPosition: {x: 0.5, y: 0.5}
     mosaicPadding: 4
     spritePadding: 0
-    generateModelPrefab: 0
-    generateAnimationClips: 0
+    generateModelPrefab: 1
+    generateAnimationClips: 1
     addSortingGroup: 1
     addShadowCasters: 0
     generateIndividualEvents: 1
     generateSpriteAtlas: 1
   importFileNodeState: 1
-  platformSettingsDirtyTick: 639104144131754185
+  platformSettingsDirtyTick: 639104990126075788
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -127,19 +127,19 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: charger67
+  - name: UI speedometer
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
-    alignment: 0
+    pivot: {x: 0.99999994, y: -0.19333333}
+    alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
     rect:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 58
-      height: 147
-    spriteID: 6465b9648652bfa4aa9b849363f6ca4d
+      width: 152
+      height: 150
+    spriteID: f39a5b15c3f081840a4db1bd0071214a
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -153,25 +153,25 @@ ScriptedImporter:
   asepriteLayers:
   - layerIndex: 0
     uuid:
-      value0: 2643874881
+      value0: 2091758131
       value1: 0
       value2: 0
       value3: 0
-    guid: -1651092415
-    name: charger67
+    guid: 0
+    name: UI speedometer
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: charger
+    - name: UI speedometer
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 3
-        y: 5
-        width: 58
-        height: 147
-      spriteId: 6465b9648652bfa4aa9b849363f6ca4d
+        x: 166
+        y: 29
+        width: 152
+        height: 150
+      spriteId: f39a5b15c3f081840a4db1bd0071214a
     linkedCells: []
     tileCells: []
     tileSetIndex: 0
@@ -182,7 +182,7 @@ ScriptedImporter:
     overridden: 0
     ignorePlatformSupport: 0
     maxTextureSize: 16384
-    resizeAlgorithm: 0
+    resizeAlgorithm: 1
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
@@ -205,5 +205,5 @@ ScriptedImporter:
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 64, y: 168}
-  previousTextureSize: {x: 128, y: 256}
+  canvasSize: {x: 636, y: 200}
+  previousTextureSize: {x: 256, y: 256}
