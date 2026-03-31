@@ -27,19 +27,12 @@ public class CameraController : MonoBehaviour
             Debug.LogWarning("CameraController: Target player not assigned!");
             return;
         }
-
         float speedPerc = rb.linearVelocity.magnitude/ maxSpeed;
-
         float targetZoom = Mathf.Lerp(maxZoomIn, maxZoomOut, speedPerc);
         float currOffsetDist =Mathf.Lerp(0f,maxForwardOffset,speedPerc);
         Vector3 currOffset =target.transform.up * currOffsetDist+offset; //Sečtení nastaveného offsetu s dynamickým posunem dopředu
         Vector3 desiredPosition = target.position + currOffset;
-       
-  
-
         transform.position = Vector3.MoveTowards(transform.position, desiredPosition, cameraMoveSpeed * Time.deltaTime);
         Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, targetZoom, Time.deltaTime * zoomSmoothness);
-
-    
     }
 }

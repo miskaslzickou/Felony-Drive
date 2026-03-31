@@ -1,6 +1,6 @@
 using UnityEngine;
 using static UnityEngine.InputSystem.DefaultInputActions;
-
+using UnityEngine.Rendering.Universal;
 public class CarEffects : MonoBehaviour
 {
     public CarControllerV2 car; // Reference na skript pro ovládání auta
@@ -17,7 +17,7 @@ public class CarEffects : MonoBehaviour
     public TrailRenderer[] trailRenderers;
     public ParticleSystem[] driftParticles;
     public Animator animator;
-    public Light  [] headlight;
+    public Light2D [] headlight;
 
     private void Awake()
     {
@@ -27,17 +27,18 @@ public class CarEffects : MonoBehaviour
        
 
     }
+   
     public void Honk(bool state) {
         if (state) 
             honkAudioSrc.Play();
         else
             honkAudioSrc.Stop();
     }
-    public void ToggleLights()
+    public void Lights(bool state)
     {
         foreach (var light in headlight)
         {
-            light.enabled = !light.enabled;
+            light.enabled = state;
         }
     }
     public void StartEngineSound(bool state)
@@ -50,6 +51,7 @@ public class CarEffects : MonoBehaviour
         else
         {
             engineAudioSrc.Stop();
+            
            
 
         }

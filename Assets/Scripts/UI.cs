@@ -24,6 +24,6 @@ public class UI : MonoBehaviour
     {
         normalizedSpeed = target.GetComponent<CarControllerV2>().normalizedSpeed;
         needle.style.rotate = new Rotate(new Angle(Mathf.Lerp(minAngle, maxAngle, normalizedSpeed), AngleUnit.Degree));
-        Debug.Log($"Normalized Speed: {normalizedSpeed}");
+        
     }
 }

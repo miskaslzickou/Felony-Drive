@@ -9,7 +9,7 @@ public class CarControllerV2 : MonoBehaviour
     [Header("Fyzikální hodnoty")]
     public float maxSpeed = 61f;
     public float maxReverseSpeed = 10f;
-    public float acceleration = 10f;
+    //public float acceleration = 10f;
     public float weight = 1f;
     public float speed => rb.linearVelocity.magnitude;
     public float steeringPower = 5f;
@@ -30,7 +30,10 @@ public class CarControllerV2 : MonoBehaviour
     private float currRearGrip;
     public float axleDistance = 0.75f;
     public float rearLateralSpeed;
-    public CarEffects carEffects; // Reference na skript pro efekty
+    private bool lightsOn=false;
+    [Header("Komponenty")]
+    private CarEffects carEffects; // Reference na skript pro efekty
+    private CarGearBox carGearBox; // Reference na skript pro převodovku
 
 
 
@@ -39,6 +42,8 @@ public class CarControllerV2 : MonoBehaviour
         playerActions = new PlayerActions(); //importov�n� ovl�d�n� 
         rb = GetComponent<Rigidbody2D>();
         carCollider = GetComponent<Collider2D>();
+        carEffects = GetComponent<CarEffects>();
+        carGearBox = GetComponent<CarGearBox>();
         rb.mass = weight; //nastaven� hmotnosti auta
         currRearGrip = rearGrip;
       
@@ -63,8 +68,21 @@ public class CarControllerV2 : MonoBehaviour
         playerActions.Car.Honk.canceled += ctx => {
            carEffects.Honk(false);
         };
+        playerActions.Car.LightsOnOff.performed += ctx =>
+        {
+            lightsOn = !lightsOn;
+            carEffects.Lights(lightsOn);
+        };
 
-    }
+        playerActions.Car.ShiftUp.performed += ctx =>
+        {
+            carGearBox.ShiftUp();
+        };
+        playerActions.Car.ShiftDown.performed += ctx =>
+        {
+            carGearBox.ShiftDown();
+        };
+        }
     private void OnEnable()
     {
         playerActions.Car.Enable();
@@ -81,14 +99,17 @@ public class CarControllerV2 : MonoBehaviour
     }
     void UpdateSpeed()
     {
-       
-
+       Gear currentGear = carGearBox.CurrenGear;
+        Debug.Log($"Current Gear: {currentGear.name} | Speed: {forwardSpeed}");
         if (throttleInput == 1 && engineStarted)
         {
             rb.linearDamping = 0f;
-            rb.AddForce(transform.up * throttleInput * acceleration, ForceMode2D.Force);
+            float speedFactor = 1 - (forwardSpeed / currentGear.maxSpeed);
+            speedFactor = Mathf.Clamp01(speedFactor);
+            float finalForce=throttleInput * currentGear.gearAcceleration*speedFactor;
+            rb.AddForce(transform.up *finalForce);
         }
-        else if (throttleInput == -1 && !engineStarted)
+        else if (throttleInput == -1 )
         {
             rb.linearDamping = brakeForce;
             isBraking = true;
@@ -124,12 +145,6 @@ public class CarControllerV2 : MonoBehaviour
      
         rb.AddForceAtPosition(frontFriction, frontAxlePos, ForceMode2D.Force);
         rb.AddForceAtPosition(rearFriction, rearAxlePos, ForceMode2D.Force);
-
-        if (speed > maxSpeed)
-            rb.linearVelocity = rb.linearVelocity.normalized * maxSpeed;
-
-        if (forwardSpeed < -maxReverseSpeed)
-            rb.linearVelocity = rb.linearVelocity.normalized * maxReverseSpeed;
 
         if (Mathf.Abs(steeringInput) < 0.05f && Mathf.Abs(rb.angularVelocity) < 0.5f)
         {
