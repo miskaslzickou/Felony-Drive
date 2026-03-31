@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 007f0c4e813f31d4fa951c7255958459
+guid: b3bb36cc89dcfb5498c405c7db6793d8
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -32,10 +32,10 @@ ScriptedImporter:
     sRGBTexture: 1
     spriteMode: 2
     spriteExtrude: 1
-    spriteMeshType: 1
+    spriteMeshType: 0
     alignment: 0
     spritePivot: {x: 0.5, y: 0.5}
-    spritePixelsToUnits: 100
+    spritePixelsToUnits: 16
     spriteBorder: {x: 0, y: 0, z: 0, w: 0}
     spriteGenerateFallbackPhysicsShape: 0
     generateCubemap: 6
@@ -53,9 +53,9 @@ ScriptedImporter:
     filterMode: 0
     aniso: 1
     mipBias: 0
-    wrapU: 1
-    wrapV: 1
-    wrapW: 1
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
     normalMap: 0
     textureFormat: 0
     maxTextureSize: 0
@@ -97,7 +97,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 639105498912515218
+  platformSettingsDirtyTick: 639105500051750201
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -122,9 +122,9 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: UI speedometer
+  - name: tiremark
     originalName: 
-    pivot: {x: 0.99999994, y: -0.19333333}
+    pivot: {x: 0.5, y: 0}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -132,9 +132,9 @@ ScriptedImporter:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 152
-      height: 150
-    spriteID: f39a5b15c3f081840a4db1bd0071214a
+      width: 16
+      height: 16
+    spriteID: ae9b89488a8d31544ad655789158737e
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -146,29 +146,41 @@ ScriptedImporter:
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
-    guid: 0
-    name: UI speedometer
+    guid: 215801391
+    name: tiremark
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: UI speedometer
+    - name: tiremark
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 166
-        y: 29
-        width: 152
-        height: 150
-      spriteId: f39a5b15c3f081840a4db1bd0071214a
+        x: 0
+        y: 0
+        width: 16
+        height: 16
+      spriteId: ae9b89488a8d31544ad655789158737e
     linkedCells: []
     parentIndex: -1
   platformSettings:
+  - name: Default
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
   - name: DefaultTexturePlatform
     overridden: 0
     ignorePlatformSupport: 0
-    maxTextureSize: 16384
-    resizeAlgorithm: 1
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
     compressionQuality: 50
@@ -179,10 +191,10 @@ ScriptedImporter:
   - name: Standalone
     overridden: 0
     ignorePlatformSupport: 0
-    maxTextureSize: 16384
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     forceMaximumCompressionQuality_BC6H_BC7: 0
     crunchedCompression: 0
@@ -191,4 +203,4 @@ ScriptedImporter:
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 636, y: 200}
+  canvasSize: {x: 16, y: 16}
