@@ -6,12 +6,12 @@ Hra je o simulaci řízení auta na styl [GTA 1](https://cs.wikipedia.org/wiki/G
 - **Grafika:** Libreprite (vlastní pixel-artové modely a animace)
 - **Verzování:** Git
 ## Roadmap
-- [x] Semi-realistická fyzika vozidla :car:
-- [x] Dynamická kamera reagujicí na rychlost :movie_camera:
-- [ ] Audio-vizuální efekty :sound::tv:
-- [ ] Uživatelské rozhraní :joystick:
-- [ ] Prostředí :city_sunrise:
-- [ ] Mise :goal_net:
+- [x] :car: Semi-realistická fyzika vozidla 
+- [x] :movie_camera: Dynamická kamera reagujicí na rychlost 
+- [ ] :sound::tv: Audio-vizuální efekty 
+- [ ] :joystick: Uživatelské rozhraní 
+- [ ] :city_sunrise: Prostředí 
+- [ ] :goal_net: Mise 
 ## Ovládání
 - Plyn/Brzda W/S  :arrow_up:  :arrow_down:
 - Zatáčení A/D :arrow_left: :arrow_right:
