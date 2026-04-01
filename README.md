@@ -1,11 +1,11 @@
 # Felony-Drive
 Hra je o simulaci řízení auta na styl [GTA 1](https://cs.wikipedia.org/wiki/Grand_Theft_Auto_(videohra)).
-## Nástroje a technologie :computer:
+## :computer: Nástroje a technologie 
 - **Herní engine:** Unity (s využitím Universal Render Pipeline pro moderní 2D nasvícení)
 - **Programování:** C# (využití nového Unity Input Systemu pro plynulé ovládání)
 - **Grafika:** Libreprite (vlastní pixel-artové modely a animace)
 - **Verzování:** Git
-## Roadmap
+## :world_map: Roadmap 
 - [x] :car: Semi-realistická fyzika vozidla 
 - [x] :movie_camera: Dynamická kamera reagujicí na rychlost 
 - [ ] :sound::tv: Audio-vizuální efekty 
