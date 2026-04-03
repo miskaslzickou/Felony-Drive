@@ -163,6 +163,15 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Nitro"",
+                    ""type"": ""Button"",
+                    ""id"": ""80b11d92-cb69-4f21-ad60-d4cf1332abc0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -297,6 +306,17 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""action"": ""ShiftDown"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fcc31da6-a443-4d2e-b62e-3643fb22dc5e"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Nitro"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -313,6 +333,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_Car_LightsOnOff = m_Car.FindAction("Lights On/Off", throwIfNotFound: true);
         m_Car_ShiftUp = m_Car.FindAction("ShiftUp", throwIfNotFound: true);
         m_Car_ShiftDown = m_Car.FindAction("ShiftDown", throwIfNotFound: true);
+        m_Car_Nitro = m_Car.FindAction("Nitro", throwIfNotFound: true);
     }
 
     ~@PlayerActions()
@@ -401,6 +422,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Car_LightsOnOff;
     private readonly InputAction m_Car_ShiftUp;
     private readonly InputAction m_Car_ShiftDown;
+    private readonly InputAction m_Car_Nitro;
     /// <summary>
     /// Provides access to input actions defined in input action map "Car".
     /// </summary>
@@ -444,6 +466,10 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Car/ShiftDown".
         /// </summary>
         public InputAction @ShiftDown => m_Wrapper.m_Car_ShiftDown;
+        /// <summary>
+        /// Provides access to the underlying input action "Car/Nitro".
+        /// </summary>
+        public InputAction @Nitro => m_Wrapper.m_Car_Nitro;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -494,6 +520,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @ShiftDown.started += instance.OnShiftDown;
             @ShiftDown.performed += instance.OnShiftDown;
             @ShiftDown.canceled += instance.OnShiftDown;
+            @Nitro.started += instance.OnNitro;
+            @Nitro.performed += instance.OnNitro;
+            @Nitro.canceled += instance.OnNitro;
         }
 
         /// <summary>
@@ -529,6 +558,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @ShiftDown.started -= instance.OnShiftDown;
             @ShiftDown.performed -= instance.OnShiftDown;
             @ShiftDown.canceled -= instance.OnShiftDown;
+            @Nitro.started -= instance.OnNitro;
+            @Nitro.performed -= instance.OnNitro;
+            @Nitro.canceled -= instance.OnNitro;
         }
 
         /// <summary>
@@ -625,5 +657,12 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnShiftDown(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Nitro" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnNitro(InputAction.CallbackContext context);
     }
 }

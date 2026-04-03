@@ -15,7 +15,7 @@ public class UI : MonoBehaviour
     private VisualElement needle;
     private VisualElement speedometer;
     private VisualElement gear;
-    public Color lightsOnColour; 
+     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void OnEnable()
     {

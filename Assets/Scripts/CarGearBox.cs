@@ -16,6 +16,7 @@ public class CarGearBox : MonoBehaviour
     public Gear[] gears;
     public int currentGear=1;
     public Gear CurrenGear=>gears[currentGear];
+    public UIData uiData;
     void Start()
     {
         
@@ -23,12 +24,19 @@ public class CarGearBox : MonoBehaviour
     }
     public void ShiftUp()
     {
-        if (currentGear < gears.Length - 1) currentGear++;
+        if (!(currentGear < gears.Length - 1))
+            return;
+        currentGear++;
+        uiData.gear = gears[currentGear].name;
+
     }
 
     public void ShiftDown()
     {
-        if (currentGear > 0) currentGear--;
+        if (!(currentGear > 0))
+            return;
+        currentGear--;
+        uiData.gear = gears[currentGear].name;
     }
 
 
