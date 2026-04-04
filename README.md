@@ -16,3 +16,6 @@ Hra je o simulaci řízení auta na styl [GTA 1](https://cs.wikipedia.org/wiki/G
 - Plyn/Brzda W/S  :arrow_up:  :arrow_down:
 - Zatáčení A/D :arrow_left: :arrow_right:
 - Ruční brzda space :parking:
+
+
+t_start1.mp3 by roscoetoon -- https://freesound.org/s/26814/ -- License: Attribution 3.0

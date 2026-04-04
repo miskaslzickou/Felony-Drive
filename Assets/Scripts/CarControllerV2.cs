@@ -20,7 +20,8 @@ public class CarControllerV2 : MonoBehaviour
     private float throttleInput;
     private float steeringInput;
     private float steerAngle;
-    private bool engineStarted=false;
+    public bool engineStarted=false;
+    public bool isHonking=false;
     private float forwardSpeed => Vector2.Dot(rb.linearVelocity, transform.up);
     public float normalizedSpeed => (rb != null) ? (Mathf.Abs(forwardSpeed/ maxSpeed)) : 0f;
     //public AnimationCurve steeringCurve; // k�ivka pro �pravu s�ly ��zen� v z�vislosti na rychlosti
@@ -60,13 +61,15 @@ public class CarControllerV2 : MonoBehaviour
         };
         playerActions.Car.EngineStartStop.performed += ctx =>EngineStart();
         playerActions.Car.Honk.performed += ctx => {
-            carEffects.Honk(true);
+            carEffects.Honk();
+            isHonking = true;
         };
 
         // dodělat troubení s držením tlačítka, aby se přehrávalo dokud je držíš
         // Když tlačítko pustíš, přestane troubit
         playerActions.Car.Honk.canceled += ctx => {
-           carEffects.Honk(false);
+           carEffects.Honk();
+            isHonking = false;
         };
         playerActions.Car.LightsOnOff.performed += ctx =>
         {
@@ -95,7 +98,7 @@ public class CarControllerV2 : MonoBehaviour
     {
         
         engineStarted=!engineStarted;
-        carEffects.StartEngineSound(engineStarted);
+        carEffects.StartEngineSound();
     }
     void UpdateSpeed()
     {

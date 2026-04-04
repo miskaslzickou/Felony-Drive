@@ -19,7 +19,7 @@ public class CarGearBox : MonoBehaviour
     public UIData uiData;
     void Start()
     {
-        
+        uiData.gear=gears[currentGear].name;
 
     }
     public void ShiftUp()
