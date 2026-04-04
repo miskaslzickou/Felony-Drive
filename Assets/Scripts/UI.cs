@@ -4,15 +4,21 @@ using UnityEngine.UIElements;
 public class UI : MonoBehaviour
 {
     public UIDocument uiDocument;
-    public string needleElement = "Needle";
+    public string needleSpeedElement = "NeedleSpeed";
     public string speedometerElement ="Speedometer";
+    public string needleRPMElement = "RPMNeedle";
+    public string rpmElement = "RPM";
     public string gearElement = "Gear";
     public Transform target;
     private float normalizedSpeed;
     [Header("Úhly (Ve stupních)")]
-    public float minAngle = 0f; 
-    public float maxAngle = 271f;
-    private VisualElement needle;
+    public float speedMinAngle = -2f; 
+    public float speedMaxAngle = 271f;
+    public float rpmMinAngle = 1f;
+    public float rpmMaxAngle = 263f;
+    private VisualElement needleSpeed;
+    private VisualElement needleRPM;
+    private VisualElement rpm;
     private VisualElement speedometer;
     private VisualElement gear;
      
@@ -20,21 +26,25 @@ public class UI : MonoBehaviour
     void OnEnable()
     {
         var root = uiDocument.rootVisualElement;
-        needle = root.Q<VisualElement>(needleElement);
+        needleSpeed = root.Q<VisualElement>(needleSpeedElement);
         speedometer = root.Q<VisualElement>(speedometerElement);
-        gear=root.Q<VisualElement>(gearElement);
+        needleRPM= root.Q<VisualElement>(needleRPMElement);
+        rpm = root.Q<VisualElement>(rpmElement);
+        gear =root.Q<VisualElement>(gearElement);
     }
 
     // Update is called once per frame
     public void ChangeSpeedometerTint(bool state)
     {
         if (state) {
-            speedometer.style.unityBackgroundImageTintColor =new Color(76f / 255f, 231f / 255f, 222f / 255f);
-            gear.style.color = new Color(76f / 255f, 231f / 255f, 222f / 255f);
+            speedometer.style.unityBackgroundImageTintColor =new Color(184f / 255f, 252f / 255f, 242f / 249f);
+            rpm.style.unityBackgroundImageTintColor = new Color(184f / 255f, 252f / 255f, 242f / 249f);
+            gear.style.color = new Color(184f / 255f, 252f / 255f, 242f / 249f);
         }
         else
         {
             speedometer.style.unityBackgroundImageTintColor = Color.white;
+            rpm.style.unityBackgroundImageTintColor= Color.white;
             gear.style.color =  Color.white;
 
         }
@@ -42,7 +52,7 @@ public class UI : MonoBehaviour
     void Update()
     {
         normalizedSpeed = target.GetComponent<CarControllerV2>().normalizedSpeed;
-        needle.style.rotate = new Rotate(new Angle(Mathf.Lerp(minAngle, maxAngle, normalizedSpeed), AngleUnit.Degree));
+        needleSpeed.style.rotate = new Rotate(new Angle(Mathf.Lerp(speedMinAngle, speedMaxAngle, normalizedSpeed), AngleUnit.Degree));
         
     }
 }
