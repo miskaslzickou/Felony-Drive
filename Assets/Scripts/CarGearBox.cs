@@ -23,12 +23,12 @@ public class CarGearBox : MonoBehaviour
     public Gear CurrenGear=>gears[currentGear];
     public UIData uiData;
     public float rpm;
-    public CarControllerV2 car;
+    private CarControllerV2 car;
 
     void Start()
     {
         uiData.gear=gears[currentGear].name;
-      
+        car= GetComponent<CarControllerV2>();
     }
     public void ShiftUp()
     {
@@ -53,6 +53,13 @@ public class CarGearBox : MonoBehaviour
     {
         if (car.engineStarted)
         {
+            if (currentGear == 1 )//pokud je auto v neutrálu a drží plyn, tak se otáčky zvyšují, ale auto se nepohybuje
+            {
+                rpm += (car.throttleInput > 0 ? 1f : -1f) * 2000f * Time.deltaTime;
+                rpm= Mathf.Clamp(rpm, 1000f, maxRPM);
+                return;
+            }
+           
             rpm = 1000f;
             rpm +=  rpmCurve.Evaluate(Mathf.Abs(car.speed / gears[currentGear].maxSpeed  ))*4000f;
             

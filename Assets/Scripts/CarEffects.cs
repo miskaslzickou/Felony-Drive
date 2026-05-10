@@ -4,9 +4,9 @@ using System.Collections;
 using UnityEngine.Rendering.Universal;
 public class CarEffects : MonoBehaviour
 {
-    public CarControllerV2 car; // Reference na skript pro ovládání 
+    private CarControllerV2 car; // Reference na skript pro ovládání 
     public UI ui;
-    public CarGearBox carGearBox;
+    private CarGearBox carGearBox;
     [Header("Nastavení zvukových efektů")]
     public AudioClip engineStartAudioClip;
     public AudioClip engineLoopAudioClip;
@@ -28,6 +28,8 @@ public class CarEffects : MonoBehaviour
         engineAudioSrc.clip = engineStartAudioClip;
         honkAudioSrc.clip = honkAudioClip;
         originalScale = transform.localScale;
+        car = GetComponent<CarControllerV2>();
+        carGearBox = GetComponent<CarGearBox>();
     }
    
     public void Honk() {

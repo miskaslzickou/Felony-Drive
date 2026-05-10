@@ -17,12 +17,11 @@ public class CarControllerV2 : MonoBehaviour
     public float cruiseDamping = 1.5f; // odpor při jízdě bez plynu
     public bool isHandbrake = false;
     public bool isBraking = false;
-    private float throttleInput;
-    private float steeringInput;
-    private float steerAngle;
+    public float throttleInput { get; private set; }
+    public float steeringInput { get; private set; }
     public bool engineStarted=false;
     public bool isHonking=false;
-    private float forwardSpeed => Vector2.Dot(rb.linearVelocity, transform.up);
+    public float forwardSpeed => Vector2.Dot(rb.linearVelocity, transform.up);
     public float normalizedSpeed => (rb != null) ? (Mathf.Abs(forwardSpeed/ maxSpeed)) : 0f;
     //public AnimationCurve steeringCurve; // k�ivka pro �pravu s�ly ��zen� v z�vislosti na rychlosti
     [Header("Nastaven� n�prav(Gripu)")]
@@ -35,7 +34,7 @@ public class CarControllerV2 : MonoBehaviour
     [Header("Komponenty")]
     private CarEffects carEffects; // Reference na skript pro efekty
     private CarGearBox carGearBox; // Reference na skript pro převodovku
-
+    private CarNitro carNitro; // Reference na skript pro nitro
 
 
     private void Awake()
@@ -45,6 +44,7 @@ public class CarControllerV2 : MonoBehaviour
         carCollider = GetComponent<Collider2D>();
         carEffects = GetComponent<CarEffects>();
         carGearBox = GetComponent<CarGearBox>();
+        carNitro = GetComponent<CarNitro>();
         rb.mass = weight; //nastaven� hmotnosti auta
         currRearGrip = rearGrip;
       
@@ -85,8 +85,13 @@ public class CarControllerV2 : MonoBehaviour
         {
             carGearBox.ShiftDown();
         };
-        }
-    private void OnEnable()
+        playerActions.Car.Nitro.performed += ctx =>
+        {
+            carNitro.ToggleNitro();
+        };
+    }
+       
+private void OnEnable()
     {
         playerActions.Car.Enable();
     }
@@ -109,7 +114,7 @@ public class CarControllerV2 : MonoBehaviour
             rb.linearDamping = 0f;
             float speedFactor = 1 - (forwardSpeed / currentGear.maxSpeed);
             speedFactor = Mathf.Clamp01(speedFactor);
-            float finalForce=throttleInput * currentGear.gearAcceleration*speedFactor;
+            float finalForce=throttleInput * currentGear.gearAcceleration*speedFactor+(carNitro.nitroActive? carNitro.nitroBoost : 0f);
             rb.AddForce(transform.up *finalForce);
         }
         else if (throttleInput == -1 )

@@ -38,6 +38,7 @@ public class Gauge {
 }
 public class UI : MonoBehaviour
 {
+    [Header("Nastavení UI")]
     public UIDocument uiDocument;
     public string needleSpeedElementName = "NeedleSpeed";
     public string speedometerElementName ="Speedometer";
@@ -46,34 +47,59 @@ public class UI : MonoBehaviour
     public string gearElementName = "Gear";
     public string needleFuelElementName = "NeedleFuel";
     public Transform target;
+    [Header("Nastavení budíků")]
     public Gauge speedometer;
     public Gauge tachometer;
     public Gauge fuel;
     private CarControllerV2 carController;
     private CarFuel carFuel;
     private CarGearBox carGearBox;
+    private CarNitro carNitro;
     private VisualElement gear;
-
-
-     
+    [Header("Nastavení nitro")]
+    public string nitroFillElementName = "LiquidFill";
+    private VisualElement nitroFill;
+    public float maxSloshAngle = 20f;
+    public float maxSloshYOffset = 15f;
+    public float sloshSpeed = 5f;
+    private float currentSloshRotation = 0f;
+    private float currentSloshY = 0f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void OnEnable()
     {
         
         var root = uiDocument.rootVisualElement;
+        
         speedometer.Initialize(speedometerElementName, uiDocument);
         tachometer.Initialize(rpmElementName, uiDocument);
         speedometer.Needle.Initialize(needleSpeedElementName, uiDocument);
         tachometer.Needle.Initialize(needleRPMElementName, uiDocument);
         gear =root.Q<VisualElement>(gearElementName);
+        nitroFill = root.Q<VisualElement>(nitroFillElementName);
+
         carController = target.GetComponent<CarControllerV2>();
         carFuel = target.GetComponent<CarFuel>();
         carGearBox = target.GetComponent<CarGearBox>();
+        carNitro = target.GetComponent<CarNitro>();
         fuel.Needle.Initialize(needleFuelElementName, uiDocument);
-
+        
     }
 
-    // Update is called once per frame
+    public void UpdateNitroUI()
+    {
+        float ratio =carNitro.currentNitro / carNitro.maxNitro;
+        float targetRotation = -carController.steeringInput * maxSloshAngle*carController.normalizedSpeed;
+        currentSloshRotation = Mathf.Lerp(currentSloshRotation, targetRotation, Time.deltaTime * sloshSpeed);
+
+        float targetYOffset = -carController.normalizedSpeed * maxSloshYOffset;
+        currentSloshY = Mathf.Lerp(currentSloshY, targetYOffset, Time.deltaTime * sloshSpeed);
+
+        nitroFill.style.rotate = new Rotate(new Angle(currentSloshRotation, AngleUnit.Degree));
+
+        nitroFill.style.translate = new Translate(0, Mathf.Lerp(99,0,Mathf.Clamp01(ratio -currentSloshY)), 0);
+       
+    }
+
     public void ChangeSpeedometerTint(bool state)
     {
         if (state) {
@@ -98,6 +124,6 @@ public class UI : MonoBehaviour
         speedometer.Needle.UpdateNeedle(normalizedSpeed);
         tachometer.Needle.UpdateNeedle(normalizedRPM);
         fuel.Needle.UpdateNeedle(normalizedFuel);
-
+        UpdateNitroUI();
     }
 }
