@@ -1,58 +1,103 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+[System.Serializable]
+public class Gauge {
+    public GaugeNeedle Needle;
+    public VisualElement GaugeElement;
+    public void Initialize(string elementName, UIDocument uiDocument)
+    {
+        var root = uiDocument.rootVisualElement;
+        GaugeElement = root.Q<VisualElement>(elementName);
+    }
+    public void SetTint(Color tintColor)
+    {
+        GaugeElement.style.unityBackgroundImageTintColor = tintColor;
+    }
+    [System.Serializable]
+    public class GaugeNeedle
+    {
+        public void Initialize(string elementName, UIDocument uiDocument)
+        {
+            var root = uiDocument.rootVisualElement;
+            NeedleElement = root.Q<VisualElement>(elementName);
+        }
+      
+        
+        private VisualElement NeedleElement;
+        public float MinAngle;
+        public float MaxAngle;
+        public void UpdateNeedle(float normalizedValue)
+        {
+            float angle = Mathf.Lerp(MinAngle, MaxAngle, normalizedValue);
+            NeedleElement.style.rotate = new Rotate(new Angle(angle, AngleUnit.Degree));
+        }
+
+    }
+}
 public class UI : MonoBehaviour
 {
     public UIDocument uiDocument;
-    public string needleSpeedElement = "NeedleSpeed";
-    public string speedometerElement ="Speedometer";
-    public string needleRPMElement = "RPMNeedle";
-    public string rpmElement = "RPM";
-    public string gearElement = "Gear";
+    public string needleSpeedElementName = "NeedleSpeed";
+    public string speedometerElementName ="Speedometer";
+    public string needleRPMElementName = "NeedleRPM";
+    public string rpmElementName = "RPM";
+    public string gearElementName = "Gear";
+    public string needleFuelElementName = "NeedleFuel";
     public Transform target;
-    private float normalizedSpeed;
-    [Header("Úhly (Ve stupních)")]
-    public float speedMinAngle = -2f; 
-    public float speedMaxAngle = 271f;
-    public float rpmMinAngle = 1f;
-    public float rpmMaxAngle = 263f;
-    private VisualElement needleSpeed;
-    private VisualElement needleRPM;
-    private VisualElement rpm;
-    private VisualElement speedometer;
+    public Gauge speedometer;
+    public Gauge tachometer;
+    public Gauge fuel;
+    private CarControllerV2 carController;
+    private CarFuel carFuel;
+    private CarGearBox carGearBox;
     private VisualElement gear;
+
+
      
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void OnEnable()
     {
+        
         var root = uiDocument.rootVisualElement;
-        needleSpeed = root.Q<VisualElement>(needleSpeedElement);
-        speedometer = root.Q<VisualElement>(speedometerElement);
-        needleRPM= root.Q<VisualElement>(needleRPMElement);
-        rpm = root.Q<VisualElement>(rpmElement);
-        gear =root.Q<VisualElement>(gearElement);
+        speedometer.Initialize(speedometerElementName, uiDocument);
+        tachometer.Initialize(rpmElementName, uiDocument);
+        speedometer.Needle.Initialize(needleSpeedElementName, uiDocument);
+        tachometer.Needle.Initialize(needleRPMElementName, uiDocument);
+        gear =root.Q<VisualElement>(gearElementName);
+        carController = target.GetComponent<CarControllerV2>();
+        carFuel = target.GetComponent<CarFuel>();
+        carGearBox = target.GetComponent<CarGearBox>();
+        fuel.Needle.Initialize(needleFuelElementName, uiDocument);
+
     }
 
     // Update is called once per frame
     public void ChangeSpeedometerTint(bool state)
     {
         if (state) {
-            speedometer.style.unityBackgroundImageTintColor =new Color(184f / 255f, 252f / 255f, 242f / 249f);
-            rpm.style.unityBackgroundImageTintColor = new Color(184f / 255f, 252f / 255f, 242f / 249f);
+          
             gear.style.color = new Color(184f / 255f, 252f / 255f, 242f / 249f);
+            speedometer.SetTint(new Color(184f / 255f, 252f / 255f, 242f / 249f));
+            tachometer.SetTint(new Color(184f / 255f, 252f / 255f, 242f / 249f));
         }
         else
         {
-            speedometer.style.unityBackgroundImageTintColor = Color.white;
-            rpm.style.unityBackgroundImageTintColor= Color.white;
+           
             gear.style.color =  Color.white;
-
+            speedometer.SetTint(Color.white);
+            tachometer.SetTint(Color.white);
         }
     }
     void Update()
     {
-        normalizedSpeed = target.GetComponent<CarControllerV2>().normalizedSpeed;
-        needleSpeed.style.rotate = new Rotate(new Angle(Mathf.Lerp(speedMinAngle, speedMaxAngle, normalizedSpeed), AngleUnit.Degree));
-        
+        float normalizedSpeed = carController.normalizedSpeed;
+        float normalizedRPM= carGearBox.rpm /6000f;
+        float normalizedFuel = carFuel.currentFuel / carFuel.maxFuel;
+        speedometer.Needle.UpdateNeedle(normalizedSpeed);
+        tachometer.Needle.UpdateNeedle(normalizedRPM);
+        fuel.Needle.UpdateNeedle(normalizedFuel);
+
     }
 }

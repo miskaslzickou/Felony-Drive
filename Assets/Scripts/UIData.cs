@@ -5,6 +5,6 @@ using UnityEngine;
 public class UIData : ScriptableObject
 {
     [CreateProperty] public string gear;
-    [CreateProperty] public float fuel;
+    
 
 }

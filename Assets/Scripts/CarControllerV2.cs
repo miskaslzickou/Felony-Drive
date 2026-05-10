@@ -103,7 +103,7 @@ public class CarControllerV2 : MonoBehaviour
     void UpdateSpeed()
     {
        Gear currentGear = carGearBox.CurrenGear;
-        Debug.Log($"Current Gear: {currentGear.name} | Speed: {forwardSpeed}");
+     
         if (throttleInput == 1 && engineStarted)
         {
             rb.linearDamping = 0f;

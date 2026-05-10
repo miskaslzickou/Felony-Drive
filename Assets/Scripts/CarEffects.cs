@@ -4,15 +4,16 @@ using System.Collections;
 using UnityEngine.Rendering.Universal;
 public class CarEffects : MonoBehaviour
 {
-    public CarControllerV2 car; // Reference na skript pro ovládání auta
+    public CarControllerV2 car; // Reference na skript pro ovládání 
     public UI ui;
+    public CarGearBox carGearBox;
     [Header("Nastavení zvukových efektů")]
     public AudioClip engineStartAudioClip;
     public AudioClip engineLoopAudioClip;
     public AudioClip honkAudioClip;
     [SerializeField] private AudioSource engineAudioSrc;
     [SerializeField] private AudioSource honkAudioSrc;
-    private bool isHonking = false;
+    
    
     [Header("Nastavení vizuálních efektů")]
     public float driftThreshold = 2f; // Rychlost, při které se spustí efekt driftu
@@ -96,7 +97,7 @@ public class CarEffects : MonoBehaviour
     }
     void UpdateAudio()
     {
-        engineAudioSrc.pitch = 1f + Mathf.Clamp01(car.normalizedSpeed); // Základní pitch 1, který se zvyšuje s rychlostí
+        engineAudioSrc.pitch = 1f + carGearBox.rpm / carGearBox.maxRPM; // Základní pitch 1, který se zvyšuje s RPM
     }
     // Update is called once per frame
     void Update()
