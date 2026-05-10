@@ -5,7 +5,7 @@ using UnityEngine.Rendering.Universal;
 public class CarEffects : MonoBehaviour
 {
     private CarControllerV2 car; // Reference na skript pro ovládání 
-    public UI ui;
+    public UI UI;
     private CarGearBox carGearBox;
     [Header("Nastavení zvukových efektů")]
     public AudioClip engineStartAudioClip;
@@ -40,7 +40,7 @@ public class CarEffects : MonoBehaviour
     }
     public void Lights(bool state)
     {
-        ui.ChangeSpeedometerTint(state);
+        UI.ChangeSpeedometerTint(state);
         foreach (var light in headlight)
         {
             

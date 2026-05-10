@@ -21,7 +21,7 @@ public class CarControllerV2 : MonoBehaviour
     public float steeringInput { get; private set; }
     public bool engineStarted=false;
     public bool isHonking=false;
-    public float forwardSpeed => Vector2.Dot(rb.linearVelocity, transform.up);
+    private float forwardSpeed => Vector2.Dot(rb.linearVelocity, transform.up);
     public float normalizedSpeed => (rb != null) ? (Mathf.Abs(forwardSpeed/ maxSpeed)) : 0f;
     //public AnimationCurve steeringCurve; // k�ivka pro �pravu s�ly ��zen� v z�vislosti na rychlosti
     [Header("Nastaven� n�prav(Gripu)")]
@@ -114,7 +114,7 @@ private void OnEnable()
             rb.linearDamping = 0f;
             float speedFactor = 1 - (forwardSpeed / currentGear.maxSpeed);
             speedFactor = Mathf.Clamp01(speedFactor);
-            float finalForce=throttleInput * currentGear.gearAcceleration*speedFactor+(carNitro.nitroActive? carNitro.nitroBoost : 0f);
+            float finalForce=throttleInput * currentGear.gearAcceleration*speedFactor*(carNitro.nitroActive? carNitro.nitroBoost : 1f);
             rb.AddForce(transform.up *finalForce);
         }
         else if (throttleInput == -1 )

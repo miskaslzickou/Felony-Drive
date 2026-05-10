@@ -21,21 +21,22 @@ public class CarGearBox : MonoBehaviour
     public int currentGear=1;
     public AnimationCurve rpmCurve = AnimationCurve.Linear(0, 0, 1, 1);
     public Gear CurrenGear=>gears[currentGear];
-    public UIData uiData;
+    public UIData UIData;
     public float rpm;
     private CarControllerV2 car;
 
     void Start()
     {
-        uiData.gear=gears[currentGear].name;
-        car= GetComponent<CarControllerV2>();
+        car = GetComponent<CarControllerV2>();
+        UIData.gear=gears[currentGear].name;
+        
     }
     public void ShiftUp()
     {
         if (!(currentGear < gears.Length - 1))
             return;
         currentGear++;
-        uiData.gear = gears[currentGear].name;
+        UIData.gear = gears[currentGear].name;
 
     }
 
@@ -44,7 +45,7 @@ public class CarGearBox : MonoBehaviour
         if (!(currentGear > 0))
             return;
         currentGear--;
-        uiData.gear = gears[currentGear].name;
+        UIData.gear = gears[currentGear].name;
     }
 
 
