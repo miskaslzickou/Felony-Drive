@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using System;
 using UnityEngine.UIElements;
 
 [System.Serializable]
@@ -36,6 +37,16 @@ public class Gauge {
 
     }
 }
+public class ButtonHandler
+{   
+    private Button button;
+    
+    public ButtonHandler(string elementName, UIDocument uiDocument,Action onClickFunc) { 
+        var root = uiDocument.rootVisualElement;
+        button = root.Q<Button>(elementName);
+        button.clicked +=onClickFunc;
+    }
+}
 public class UI : MonoBehaviour
 {
     [Header("Nastavení UI")]
@@ -46,6 +57,12 @@ public class UI : MonoBehaviour
     public string rpmElementName = "RPM";
     public string gearElementName = "Gear";
     public string needleFuelElementName = "NeedleFuel";
+    public string nextStationButtonElementName = "Right";
+    public string prevStationButtonElementName = "Left";
+    public string nextSongButtonElementName = "NextSong";
+    public string prevSongButtonElementName = "PrevSong";
+    public string playPauseButtonElementName = "PlayPause";
+    public CarRadio carRadio;
     public Transform target;
     [Header("Nastavení budíků")]
     public Gauge speedometer;
@@ -83,6 +100,11 @@ public class UI : MonoBehaviour
         carNitro = target.GetComponent<CarNitro>();
         fuel.Needle.Initialize(needleFuelElementName, uiDocument);
         
+        ButtonHandler nextStationButton = new ButtonHandler(nextStationButtonElementName, uiDocument, () => carRadio.NextStation(1));
+        ButtonHandler prevStationButton = new ButtonHandler(prevStationButtonElementName, uiDocument, () => carRadio.NextStation(-1));
+        ButtonHandler nextSongButton= new ButtonHandler(nextSongButtonElementName, uiDocument, () => carRadio.NextSong(1));
+        ButtonHandler prevSongButton= new ButtonHandler(prevSongButtonElementName, uiDocument, () => carRadio.NextSong(-1));
+        ButtonHandler playPauseButton= new ButtonHandler(playPauseButtonElementName, uiDocument, () => carRadio.PlayPause());
     }
 
     public void UpdateNitroUI()

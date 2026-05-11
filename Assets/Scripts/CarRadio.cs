@@ -1,112 +1,171 @@
-using UnityEngine;
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
+
 
 public class CarRadio : MonoBehaviour
 {
-    [System.Serializable]
-    public class RadioStation
-    {
-        public string name;
-        public AudioClip clip;
-    }
+    [DllImport("MediaPlugin", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int MediaPlugin_Init();
 
-    delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+    [DllImport("MediaPlugin", CallingConvention = CallingConvention.Cdecl)]
+    private static extern void MediaPlugin_Shutdown();
 
-    [DllImport("user32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
+    [DllImport("MediaPlugin", CallingConvention = CallingConvention.Cdecl)]
+    private static extern int MediaPlugin_Refresh();
 
-    [DllImport("user32.dll", SetLastError = true)]
-    static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+    [DllImport("MediaPlugin", CallingConvention = CallingConvention.Cdecl)]
+    private static extern void MediaPlugin_GetTitle(StringBuilder buf, int bufSize);
 
-    [DllImport("user32.dll", SetLastError = true)]
-    static extern int GetWindowTextLength(IntPtr hWnd);
+    [DllImport("MediaPlugin", CallingConvention = CallingConvention.Cdecl)]
+    private static extern void MediaPlugin_GetArtist(StringBuilder buf, int bufSize);
 
-    [DllImport("user32.dll", SetLastError = true)]
-    static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint processId);
+    [DllImport("MediaPlugin", CallingConvention = CallingConvention.Cdecl)]
+    private static extern void MediaPlugin_GetAlbum(StringBuilder buf, int bufSize);
 
-    public UIData uiData;
+    [DllImport("MediaPlugin", CallingConvention = CallingConvention.Cdecl)]
+    private static extern void MediaPlugin_TogglePlayPause();
+
+    [DllImport("MediaPlugin", CallingConvention = CallingConvention.Cdecl)]
+    private static extern void MediaPlugin_Next();
+
+    [DllImport("MediaPlugin", CallingConvention = CallingConvention.Cdecl)]
+    private static extern void MediaPlugin_Prev();
+
+    public enum RadioStation { Off, Mirror, InGame1, InGame2 }
+    public RadioStation currentStation = RadioStation.Off;
+    
+    public UIData UIData;
     public AudioSource radioSound;
+    
     private string currentTrackInfo = "";
-
-    private bool isSearching = false;
-    private float updateTimer = 0f;
-    private float checkInterval = 2f;
+    private CancellationTokenSource _loopCts;
+    private bool _isPluginInitialized = false;
 
     void Start()
     {
-
+        if (MediaPlugin_Init() == 1) _isPluginInitialized = true;
     }
-
-    async void FetchSpotifyTrackAsync()
+    private void StartMirrorLoop()
     {
-        isSearching = true;
-        string result = await Task.Run(() => GetSpotifyTrackNative());
-        currentTrackInfo = result;
-        isSearching = false;
+        if (!_isPluginInitialized) return;
+
+        // Vytvoříme nový token pro ovládání smyčky
+        _loopCts = new CancellationTokenSource();
+
+        // Spustíme smyčku a předáme jí token
+        Task.Run(() => SpotifyPollingLoop(_loopCts.Token));
     }
-
-    string GetSpotifyTrackNative()
+    private void StopMirrorLoop()
     {
-        Process[] spotifyProcesses = Process.GetProcessesByName("Spotify");
-        if (spotifyProcesses.Length == 0) return "RÁDIO VYPNUTO";
-
-        HashSet<uint> pids = new HashSet<uint>();
-        foreach (var p in spotifyProcesses)
+        if (_loopCts != null)
         {
-            pids.Add((uint)p.Id);
+            _loopCts.Cancel(); // Tohle okamžitě pošle signál do smyčky, ať skončí
+            _loopCts.Dispose();
+            _loopCts = null;
         }
-
-        string trackInfo = "NIC NEHRAJE";
-
-        EnumWindows((hWnd, lParam) =>
+    }
+    public void PlayPause() { 
+        if (currentStation != RadioStation.Mirror) return;
+        MediaPlugin_TogglePlayPause();
+    }
+    public void NextSong(int direction)
+    {
+        if (currentStation != RadioStation.Mirror) return;
+        if (direction > 0)
+            MediaPlugin_Next();
+        else
+            MediaPlugin_Prev();
+    }
+    private void ChangeStation(RadioStation newStation)
+    {
+        switch (currentStation)
         {
-            GetWindowThreadProcessId(hWnd, out uint windowPid);
+            case RadioStation.Off:
+                Debug.Log("Rádio je vypnuté. Ticho.");
+                currentTrackInfo = "Rádio vypnuté.";
+                StopMirrorLoop();
+                break;
 
-            if (pids.Contains(windowPid))
+            case RadioStation.Mirror:
+              
+                StartMirrorLoop();
+                
+                break;
+
+            case RadioStation.InGame1:
+                StopMirrorLoop();
+
+                currentTrackInfo = "Hraje interní stanice 1.";
+
+                // audioSource.clip = song1;
+                // audioSource.Play();
+                break;
+
+            case RadioStation.InGame2:
+                Debug.Log("Hraje interní stanice 2.");
+                // audioSource.clip = song2;
+                // audioSource.Play();
+                break;
+        }
+    }
+    public void NextStation(int direction)
+    {
+        var stations = (RadioStation[])System.Enum.GetValues(typeof(RadioStation));
+
+        int nextIndex = ((int)currentStation + direction) % stations.Length;
+
+        currentStation = (RadioStation)nextIndex;
+        ChangeStation(currentStation);
+    }
+    private async Task SpotifyPollingLoop(CancellationToken token)
+    {
+        while (!token.IsCancellationRequested)
+        {
+            int result = MediaPlugin_Refresh();
+
+            if (result == 1)
             {
-                int length = GetWindowTextLength(hWnd);
-                if (length > 0)
-                {
-                    StringBuilder sb = new StringBuilder(length + 1);
-                    GetWindowText(hWnd, sb, sb.Capacity);
-                    string title = sb.ToString();
+                StringBuilder titleBuf = new StringBuilder(512);
+                StringBuilder artistBuf = new StringBuilder(512);
+                MediaPlugin_GetTitle(titleBuf, 512);
+                MediaPlugin_GetArtist(artistBuf, 512);
 
-                    if (title != "Spotify" && title != "Spotify Premium" && title != "GDI+ Window (Spotify.exe)" && title != "Default IME"&& title != "MSCTFIME UI")
-                    {
-                        trackInfo = title;
-                        return false;
-                    }
-                    else
-                        trackInfo = "";
-                }
+                // Updatujeme texty (pozor: Unity UI se musí updatovat v hlavním vlákně!)
+                string title = titleBuf.ToString();
+                string artist = artistBuf.ToString();
+
+                currentTrackInfo = artist + " - " + title;
             }
-            return true;
-        }, IntPtr.Zero);
 
-        return trackInfo;
+            try
+            {
+                // Čekání s podporou zrušení
+                await Task.Delay(2000, token);
+            }
+            catch (TaskCanceledException)
+            {
+                // To je v pořádku, loop byl ukončen
+                break;
+            }
+        }
+        Debug.Log("Smyčka pro Mirror byla bezpečně ukončena.");
     }
 
     void Update()
     {
-        updateTimer += Time.deltaTime;
-        if (updateTimer >= checkInterval)
+        if (UIData != null)
         {
-            updateTimer = 0f;
-            if (!isSearching)
-            {
-                FetchSpotifyTrackAsync();
-            }
+            UIData.radioTrack = currentTrackInfo;
         }
-
-        if (uiData != null)
-        {
-            uiData.radioTrack = currentTrackInfo;
-        }
+    }
+    void OnDestroy()
+    {
+        // Správné ukončení pluginu při zničení objektu/vypnutí hry
+        StopMirrorLoop();
+        if (_isPluginInitialized) MediaPlugin_Shutdown();
     }
 }
