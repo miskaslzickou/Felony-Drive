@@ -40,7 +40,7 @@ public class CarRadio : MonoBehaviour
     
     public UIData UIData;
     public AudioSource radioSound;
-    
+    private int currentTrackIndex = 0;
     private string currentTrackInfo = "";
     private CancellationTokenSource _loopCts;
     private bool _isPluginInitialized = false;
@@ -68,47 +68,61 @@ public class CarRadio : MonoBehaviour
             _loopCts = null;
         }
     }
-    public void PlayPause() { 
+    public void PlayPause()
+    {
         if (currentStation != RadioStation.Mirror) return;
-        MediaPlugin_TogglePlayPause();
+        // Odhození do pozadí, aby Unity nečekalo na odpověď z Windows
+        Task.Run(() => MediaPlugin_TogglePlayPause());
     }
     public void NextSong(int direction)
     {
         if (currentStation != RadioStation.Mirror) return;
-        if (direction > 0)
-            MediaPlugin_Next();
-        else
-            MediaPlugin_Prev();
+
+        // Odhození do pozadí
+        Task.Run(() =>
+        {
+            if (direction > 0)
+                MediaPlugin_Next();
+            else
+                MediaPlugin_Prev();
+        });
     }
     private void ChangeStation(RadioStation newStation)
     {
         switch (currentStation)
         {
             case RadioStation.Off:
+                radioSound.Stop();
                 Debug.Log("Rádio je vypnuté. Ticho.");
-                currentTrackInfo = "Rádio vypnuté.";
+                currentTrackInfo = "Radio off.";
+                UIData.radioChannel = "Off";
                 StopMirrorLoop();
                 break;
 
             case RadioStation.Mirror:
-              
+                radioSound.Stop();
+                currentTrackInfo = "Načítám informace z Mirroru...";
+                UIData.radioChannel = "Mirror";
+
                 StartMirrorLoop();
                 
                 break;
 
             case RadioStation.InGame1:
                 StopMirrorLoop();
-
+                UIData.radioChannel = "Stanice 1";
                 currentTrackInfo = "Hraje interní stanice 1.";
 
-                // audioSource.clip = song1;
-                // audioSource.Play();
+                
+                radioSound.Play();
+                radioSound.clip = Resources.Load<AudioClip>("InGame1/"+"song"+currentTrackIndex);
                 break;
 
             case RadioStation.InGame2:
-                Debug.Log("Hraje interní stanice 2.");
-                // audioSource.clip = song2;
-                // audioSource.Play();
+                UIData.radioChannel = "Stanice 2";
+                currentTrackInfo = "Hraje interní stanice 2.";
+                radioSound.Play();
+                radioSound.clip = Resources.Load<AudioClip>("InGame1/" + "song" + currentTrackIndex);
                 break;
         }
     }
@@ -116,7 +130,7 @@ public class CarRadio : MonoBehaviour
     {
         var stations = (RadioStation[])System.Enum.GetValues(typeof(RadioStation));
 
-        int nextIndex = ((int)currentStation + direction) % stations.Length;
+        int nextIndex = (((int)currentStation + direction) % stations.Length + stations.Length) % stations.Length;
 
         currentStation = (RadioStation)nextIndex;
         ChangeStation(currentStation);
@@ -159,7 +173,14 @@ public class CarRadio : MonoBehaviour
     {
         if (UIData != null)
         {
-            UIData.radioTrack = currentTrackInfo;
+            if (currentTrackInfo.Length > 28)
+            {
+                UIData.radioTrack = currentTrackInfo.Substring(0, 25) + "...";
+            }
+            else
+            {
+                UIData.radioTrack = currentTrackInfo;
+            }
         }
     }
     void OnDestroy()

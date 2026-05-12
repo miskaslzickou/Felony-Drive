@@ -1,0 +1,27 @@
+:root {
+}
+
+.RadioButton {
+    width: 26px;
+    position: relative;
+    top: initial;
+    left: initial;
+    font-size: 10px;
+    -unity-font-definition: url("project://database/Assets/Thaleah_PixelFont/Materials/ThaleahFat_TTF.ttf?fileID=12800000&guid=585188cdc4600544eb408bee749e4b3a&type=3#ThaleahFat_TTF");
+    background-image: none;
+    -unity-background-image-tint-color: rgb(243, 243, 243);
+    background-position-x: center;
+    background-position-y: center;
+    background-repeat: no-repeat no-repeat;
+    right: initial;
+    height: initial;
+    margin-left: 5px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-left-color: rgb(163, 163, 163);
+    border-right-color: rgb(163, 163, 163);
+    border-top-color: rgb(163, 163, 163);
+    border-bottom-color: rgb(163, 163, 163);
+}

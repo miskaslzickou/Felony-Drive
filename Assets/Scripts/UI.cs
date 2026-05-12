@@ -41,10 +41,19 @@ public class ButtonHandler
 {   
     private Button button;
     
-    public ButtonHandler(string elementName, UIDocument uiDocument,Action onClickFunc) { 
+    public ButtonHandler(string elementName, UIDocument uiDocument,Action onClickFunc,Action onHoverEnter,Action onHoverLeave) { 
         var root = uiDocument.rootVisualElement;
         button = root.Q<Button>(elementName);
         button.clicked +=onClickFunc;
+        button.RegisterCallback<PointerEnterEvent>(e => onHoverEnter());
+        button.RegisterCallback<PointerLeaveEvent>(e => onHoverLeave());
+    }
+    public ButtonHandler(string elementName, UIDocument uiDocument, Action onClickFunc)
+    {
+        var root = uiDocument.rootVisualElement;
+        button = root.Q<Button>(elementName);
+        button.clicked += onClickFunc;
+       
     }
 }
 public class UI : MonoBehaviour
@@ -62,6 +71,7 @@ public class UI : MonoBehaviour
     public string nextSongButtonElementName = "NextSong";
     public string prevSongButtonElementName = "PrevSong";
     public string playPauseButtonElementName = "PlayPause";
+    public UIData UIData;
     public CarRadio carRadio;
     public Transform target;
     [Header("Nastavení budíků")]
