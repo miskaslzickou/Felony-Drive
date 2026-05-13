@@ -1,4 +1,5 @@
- using UnityEngine;
+//Michal Mikuš, 3C, PVA, Felony Drive
+using UnityEngine;
 
 
 public class CarControllerV2 : MonoBehaviour
@@ -23,8 +24,10 @@ public class CarControllerV2 : MonoBehaviour
     public bool isHonking=false;
     private float forwardSpeed => Vector2.Dot(rb.linearVelocity, transform.up);
     public float normalizedSpeed => (rb != null) ? (Mathf.Abs(forwardSpeed/ maxSpeed)) : 0f;
-    //public AnimationCurve steeringCurve; // k�ivka pro �pravu s�ly ��zen� v z�vislosti na rychlosti
-    [Header("Nastaven� n�prav(Gripu)")]
+    public float optimalSteeringSpeed = 9.8f;//rychlost v m/s, při které je zatáčení nejefektivnější
+   
+    //public AnimationCurve steeringCurve=AnimationCurve.Linear(0,1,1,0.5f); // křivka pro úpravu síly řízení v závislosti na rychlosti
+    [Header("Nastavení náprav(Gripu)")]
     public float frontGrip = 10f;
     public float rearGrip = 2.5f;
     private float currRearGrip;
@@ -65,7 +68,8 @@ public class CarControllerV2 : MonoBehaviour
             isHonking = true;
         };
 
-        // dodělat troubení s držením tlačítka, aby se přehrávalo dokud je držíš
+        // dodělat troubení s držením tlačítka, aby se přehrávalo dokud je člověk drží
+
         // Když tlačítko pustíš, přestane troubit
         playerActions.Car.Honk.canceled += ctx => {
            carEffects.Honk();
@@ -105,6 +109,24 @@ private void OnEnable()
         engineStarted=!engineStarted;
         carEffects.StartEngineSound();
     }
+    private float GetSteeringMultiplier()
+    {
+        
+        float absSpeed = Mathf.Abs(forwardSpeed);
+
+        // zatáčení se zlepšuje z 0.1 na 1.0 při nižších rychlostech, pak tuhne z 1.0 na 0.4 při vyšších rychlostech
+        if (absSpeed <= optimalSteeringSpeed)
+        {
+            float t = Mathf.InverseLerp(0f, optimalSteeringSpeed, absSpeed);
+            return Mathf.Lerp(0.1f, 1f, t); // Výsledek je 0.1 až 1.0
+        }
+      
+        else
+        {
+            float t = Mathf.InverseLerp(optimalSteeringSpeed, maxSpeed, absSpeed);
+            return Mathf.Lerp(1f, 0.6f, t); // Výsledek je 1.0 až 0.4
+        }
+    }
     void UpdateSpeed()
     {
        Gear currentGear = carGearBox.CurrenGear;
@@ -128,9 +150,9 @@ private void OnEnable()
             isBraking = false;
         }
         
-        if (Mathf.Abs(forwardSpeed) > 0.1f)
+        if (Mathf.Abs(forwardSpeed) > 0.13f)
         {
-            rb.AddTorque(steeringInput * steeringPower  * Mathf.Sign(forwardSpeed));
+            rb.AddTorque(steeringInput * steeringPower * GetSteeringMultiplier());
         }
         // testoval jsem různé fyzikální způsoby magic formula, ale toto i když to je daleko od dokonalého má nejvíc konzistentní chování 
         

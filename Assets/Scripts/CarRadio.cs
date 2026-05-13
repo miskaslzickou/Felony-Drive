@@ -1,3 +1,4 @@
+//Michal Mikuš, 3C, PVA, Felony Drive
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -53,10 +54,10 @@ public class CarRadio : MonoBehaviour
     {
         if (!_isPluginInitialized) return;
 
-        // Vytvoříme nový token pro ovládání smyčky
+        
         _loopCts = new CancellationTokenSource();
 
-        // Spustíme smyčku a předáme jí token
+       
         Task.Run(() => SpotifyPollingLoop(_loopCts.Token));
     }
     private void StopMirrorLoop()
@@ -148,7 +149,7 @@ public class CarRadio : MonoBehaviour
                 MediaPlugin_GetTitle(titleBuf, 512);
                 MediaPlugin_GetArtist(artistBuf, 512);
 
-                // Updatujeme texty (pozor: Unity UI se musí updatovat v hlavním vlákně!)
+               
                 string title = titleBuf.ToString();
                 string artist = artistBuf.ToString();
 
