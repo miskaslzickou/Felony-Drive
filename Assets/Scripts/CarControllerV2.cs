@@ -18,6 +18,8 @@ public class CarControllerV2 : MonoBehaviour
     public float cruiseDamping = 1.5f; // odpor při jízdě bez plynu
     public bool isHandbrake = false;
     public bool isBraking = false;
+    public float jTurnMinSpeed = 10f;
+    public float jTurnRotationSpeed = 10f;
     public float throttleInput { get; private set; }
     public float steeringInput { get; private set; }
     public bool engineStarted=false;
@@ -155,7 +157,7 @@ private void OnEnable()
             rb.AddTorque(steeringInput * steeringPower * GetSteeringMultiplier());
         }
         // testoval jsem různé fyzikální způsoby magic formula, ale toto i když to je daleko od dokonalého má nejvíc konzistentní chování 
-        
+
         Vector2 frontAxlePos = (Vector2)transform.position + (Vector2)transform.up * axleDistance;
         Vector2 rearAxlePos = (Vector2)transform.position - (Vector2)transform.up * axleDistance;
 

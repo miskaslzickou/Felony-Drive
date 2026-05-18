@@ -7,12 +7,14 @@ public class CameraController : MonoBehaviour
     public Transform target;
     public Vector3 offset = new Vector3(0f, 0f, -10f);
     public float cameraMoveSpeed = 10f;
+    
     private Rigidbody2D rb;
     public float maxZoomOut=7.9f;
     public float maxZoomIn = 5f;
     public float zoomSmoothness = 3f;
     public float maxForwardOffset = 3f; // Maximální posun kamery dopředu při vysoké rychlosti
-    private float maxSpeed; 
+    private float maxSpeed;
+    public Camera cam;
     private void Awake()
     {
       rb = target.GetComponent<Rigidbody2D>();
@@ -32,6 +34,6 @@ public class CameraController : MonoBehaviour
         Vector3 currOffset =target.transform.up * currOffsetDist+offset; //Sečtení nastaveného offsetu s dynamickým posunem dopředu
         Vector3 desiredPosition = target.position + currOffset;
         transform.position = Vector3.MoveTowards(transform.position, desiredPosition, cameraMoveSpeed * Time.deltaTime);
-        Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, targetZoom, Time.deltaTime * zoomSmoothness);
+        cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, targetZoom, Time.deltaTime * zoomSmoothness);
     }
 }
