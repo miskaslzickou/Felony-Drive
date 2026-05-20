@@ -36,8 +36,8 @@ public class CarRadio : MonoBehaviour
     [DllImport("MediaPlugin", CallingConvention = CallingConvention.Cdecl)]
     private static extern void MediaPlugin_Prev();
 
-    public enum RadioStation { Off, Mirror, InGame1, InGame2 }
-    public RadioStation currentStation = RadioStation.Off;
+    public enum RadioStation {  Mirror, InGame1, InGame2 }
+    public RadioStation currentStation = RadioStation.Mirror;
     
     public UIData UIData;
     public AudioSource radioSound;
@@ -49,6 +49,7 @@ public class CarRadio : MonoBehaviour
     void Start()
     {
         if (MediaPlugin_Init() == 1) _isPluginInitialized = true;
+        ChangeStation(currentStation);
     }
     private void StartMirrorLoop()
     {
@@ -92,14 +93,7 @@ public class CarRadio : MonoBehaviour
     {
         switch (currentStation)
         {
-            case RadioStation.Off:
-                radioSound.Stop();
-                Debug.Log("Rádio je vypnuté. Ticho.");
-                currentTrackInfo = "Radio off.";
-                UIData.radioChannel = "Off";
-                StopMirrorLoop();
-                break;
-
+          
             case RadioStation.Mirror:
                 radioSound.Stop();
                 currentTrackInfo = "Načítám informace z Mirroru...";

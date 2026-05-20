@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3fae91fb2690b474f97101f5b362c9a1, type: 3}
   m_Name: UIData
   m_EditorClassIdentifier: Assembly-CSharp::UIData
-  gear: 3
-  fuel: 0
+  gear: 1
+  radioTrack: Limp Bizkit - Take A Look...
+  radioChannel: Mirror
+  cash: 250

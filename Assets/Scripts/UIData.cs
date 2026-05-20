@@ -8,5 +8,6 @@ public class UIData : ScriptableObject
     [CreateProperty] public string gear;
     [CreateProperty] public string radioTrack;
     [CreateProperty] public string radioChannel;
+    [CreateProperty] public float cash;
 
 }

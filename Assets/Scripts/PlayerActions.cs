@@ -172,6 +172,15 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AutoShift"",
+                    ""type"": ""Button"",
+                    ""id"": ""b6455ca2-c843-4cac-a84d-6ddc7a57958e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -317,6 +326,17 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
                     ""action"": ""Nitro"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d972a484-3196-4b3a-a0f7-6ab6a6b2b271"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AutoShift"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -334,6 +354,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         m_Car_ShiftUp = m_Car.FindAction("ShiftUp", throwIfNotFound: true);
         m_Car_ShiftDown = m_Car.FindAction("ShiftDown", throwIfNotFound: true);
         m_Car_Nitro = m_Car.FindAction("Nitro", throwIfNotFound: true);
+        m_Car_AutoShift = m_Car.FindAction("AutoShift", throwIfNotFound: true);
     }
 
     ~@PlayerActions()
@@ -423,6 +444,7 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Car_ShiftUp;
     private readonly InputAction m_Car_ShiftDown;
     private readonly InputAction m_Car_Nitro;
+    private readonly InputAction m_Car_AutoShift;
     /// <summary>
     /// Provides access to input actions defined in input action map "Car".
     /// </summary>
@@ -470,6 +492,10 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Car/Nitro".
         /// </summary>
         public InputAction @Nitro => m_Wrapper.m_Car_Nitro;
+        /// <summary>
+        /// Provides access to the underlying input action "Car/AutoShift".
+        /// </summary>
+        public InputAction @AutoShift => m_Wrapper.m_Car_AutoShift;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -523,6 +549,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Nitro.started += instance.OnNitro;
             @Nitro.performed += instance.OnNitro;
             @Nitro.canceled += instance.OnNitro;
+            @AutoShift.started += instance.OnAutoShift;
+            @AutoShift.performed += instance.OnAutoShift;
+            @AutoShift.canceled += instance.OnAutoShift;
         }
 
         /// <summary>
@@ -561,6 +590,9 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
             @Nitro.started -= instance.OnNitro;
             @Nitro.performed -= instance.OnNitro;
             @Nitro.canceled -= instance.OnNitro;
+            @AutoShift.started -= instance.OnAutoShift;
+            @AutoShift.performed -= instance.OnAutoShift;
+            @AutoShift.canceled -= instance.OnAutoShift;
         }
 
         /// <summary>
@@ -664,5 +696,12 @@ public partial class @PlayerActions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnNitro(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "AutoShift" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnAutoShift(InputAction.CallbackContext context);
     }
 }

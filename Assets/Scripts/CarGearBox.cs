@@ -21,7 +21,7 @@ public class CarGearBox : MonoBehaviour
     public float maxRPM = 5000f;
     public int currentGear=1;
     public AnimationCurve rpmCurve = AnimationCurve.Linear(0, 0, 1, 1);
-    public Gear CurrenGear=>gears[currentGear];
+    public Gear CurrentGear=>gears[currentGear];
     public UIData UIData;
     public float rpm;
     private CarControllerV2 car;

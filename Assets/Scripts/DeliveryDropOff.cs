@@ -8,7 +8,7 @@ public class DeliveryDropOff : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
-        Debug.Log("Delivered! Reward: " + reward);
+        PlayerWallet.Add(reward);
         Destroy(gameObject);
     }
 

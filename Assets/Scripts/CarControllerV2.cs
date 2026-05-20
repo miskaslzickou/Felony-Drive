@@ -18,12 +18,12 @@ public class CarControllerV2 : MonoBehaviour
     public float cruiseDamping = 1.5f; // odpor při jízdě bez plynu
     public bool isHandbrake = false;
     public bool isBraking = false;
-    public float jTurnMinSpeed = 10f;
-    public float jTurnRotationSpeed = 10f;
+   
     public float throttleInput { get; private set; }
     public float steeringInput { get; private set; }
     public bool engineStarted=false;
     public bool isHonking=false;
+    public bool autoShifting = false;
     private float forwardSpeed => Vector2.Dot(rb.linearVelocity, transform.up);
     public float normalizedSpeed => (rb != null) ? (Mathf.Abs(forwardSpeed/ maxSpeed)) : 0f;
     public float optimalSteeringSpeed = 9.8f;//rychlost v m/s, při které je zatáčení nejefektivnější
@@ -85,15 +85,21 @@ public class CarControllerV2 : MonoBehaviour
 
         playerActions.Car.ShiftUp.performed += ctx =>
         {
+            if (autoShifting) return;
             carGearBox.ShiftUp();
         };
         playerActions.Car.ShiftDown.performed += ctx =>
         {
+            if (autoShifting) return;
             carGearBox.ShiftDown();
         };
         playerActions.Car.Nitro.performed += ctx =>
         {
             carNitro.ToggleNitro();
+        };
+        playerActions.Car.AutoShift.performed += ctx =>
+        {
+            autoShifting = !autoShifting;
         };
     }
        
@@ -131,20 +137,26 @@ private void OnEnable()
     }
     void UpdateSpeed()
     {
-       Gear currentGear = carGearBox.CurrenGear;
-     
-        if (throttleInput == 1 && engineStarted)
+       Gear currentGear = carGearBox.CurrentGear;
+        if (autoShifting) {
+
+            AutoShift();
+        }
+
+
+        if (throttleInput == 1 && engineStarted||(throttleInput==-1 && carGearBox.currentGear==0 && autoShifting))
         {
+            float direction = carGearBox.currentGear==0 && autoShifting ? -1f : 1f;
             rb.linearDamping = 0f;
             float speedFactor = 1 - (forwardSpeed / currentGear.maxSpeed);
             speedFactor = Mathf.Clamp01(speedFactor);
-            float finalForce=throttleInput * currentGear.gearAcceleration*speedFactor*(carNitro.nitroActive? carNitro.nitroBoost : 1f);
+            float finalForce=throttleInput * currentGear.gearAcceleration*direction*speedFactor*(carNitro.nitroActive? carNitro.nitroBoost : 1f);
             rb.AddForce(transform.up *finalForce);
         }
-        else if (throttleInput == -1 )
-        {
+        else if (throttleInput == -1||(throttleInput==1&&carGearBox.currentGear==0) && autoShifting)
+        {            
             rb.linearDamping = brakeForce;
-            isBraking = true;
+            isBraking = true;   
         }
         else
         {
@@ -188,6 +200,22 @@ private void OnEnable()
     {   
         throttleInput = playerActions.Car.Throttle.ReadValue<float>();
         steeringInput= playerActions.Car.Turning.ReadValue<float>();
+    }
+    void AutoShift()
+    {
+        if (forwardSpeed > carGearBox.CurrentGear.maxSpeed * 0.9f && forwardSpeed>0)
+            carGearBox.ShiftUp();
+        else if (forwardSpeed < carGearBox.CurrentGear.maxSpeed  * 0.5f && carGearBox.currentGear != 2)
+            carGearBox.ShiftDown();
+        else if (throttleInput == -1 && forwardSpeed < 0.1 && carGearBox.currentGear!=0)
+        {
+            carGearBox.ShiftDown();
+        }
+        else if(throttleInput == 1 && forwardSpeed < -0.1 && carGearBox.currentGear==0)
+        {
+            carGearBox.ShiftUp();
+            carGearBox.ShiftUp();        
+        }
     }
     // Update is called once per frame
     void Update()
