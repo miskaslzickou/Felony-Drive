@@ -41,7 +41,6 @@ public class CarRadio : MonoBehaviour
     
     public UIData UIData;
     public AudioSource radioSound;
-    private int currentTrackIndex = 0;
     private string currentTrackInfo = "";
     private CancellationTokenSource _loopCts;
     private bool _isPluginInitialized = false;
@@ -109,15 +108,16 @@ public class CarRadio : MonoBehaviour
                 currentTrackInfo = "Hraje interní stanice 1.";
 
                 
+               
+                radioSound.clip = Resources.Load<AudioClip>("Radio/InGame1/"+"song1");
                 radioSound.Play();
-                radioSound.clip = Resources.Load<AudioClip>("InGame1/"+"song"+currentTrackIndex);
                 break;
 
             case RadioStation.InGame2:
                 UIData.radioChannel = "Stanice 2";
                 currentTrackInfo = "Hraje interní stanice 2.";
                 radioSound.Play();
-                radioSound.clip = Resources.Load<AudioClip>("InGame1/" + "song" + currentTrackIndex);
+                radioSound.clip = Resources.Load<AudioClip>("Radio/InGame2/" + "song1");
                 break;
         }
     }

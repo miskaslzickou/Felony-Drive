@@ -650,10 +650,10 @@ ScriptedImporter:
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 0
+        x: -128
         y: 0
-        width: 1280
-        height: 384
+        width: 1408
+        height: 640
       spriteId: 86a9b7d9691551e4fa7a3d53d07fc6da
     linkedCells: []
     tileCells: []
@@ -688,5 +688,5 @@ ScriptedImporter:
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 1280, y: 384}
-  previousTextureSize: {x: 2048, y: 512}
+  canvasSize: {x: 1280, y: 640}
+  previousTextureSize: {x: 2048, y: 1024}
