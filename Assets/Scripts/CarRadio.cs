@@ -36,7 +36,12 @@ public class CarRadio : MonoBehaviour
     [DllImport("MediaPlugin", CallingConvention = CallingConvention.Cdecl)]
     private static extern void MediaPlugin_Prev();
 
-    public enum RadioStation {  Mirror, InGame1, InGame2 }
+    public enum RadioStation
+    {
+        Mirror, InGame1,
+    //    InGame2
+    }
+
     public RadioStation currentStation = RadioStation.Mirror;
     
     public UIData UIData;
@@ -109,16 +114,16 @@ public class CarRadio : MonoBehaviour
 
                 
                
-                radioSound.clip = Resources.Load<AudioClip>("Radio/InGame1/"+"song1");
+                radioSound.clip = Resources.Load<AudioClip>("Radio/InGame1/song1");
                 radioSound.Play();
                 break;
 
-            case RadioStation.InGame2:
-                UIData.radioChannel = "Stanice 2";
-                currentTrackInfo = "Hraje interní stanice 2.";
-                radioSound.Play();
-                radioSound.clip = Resources.Load<AudioClip>("Radio/InGame2/" + "song1");
-                break;
+            //case RadioStation.InGame2:
+            //    UIData.radioChannel = "Stanice 2";
+            //    currentTrackInfo = "Hraje interní stanice 2.";
+            //    radioSound.Play();
+            //    radioSound.clip = Resources.Load<AudioClip>("Radio/InGame2/" + "song1");
+            //    break;
         }
     }
     public void NextStation(int direction)

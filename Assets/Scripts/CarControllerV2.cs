@@ -138,6 +138,10 @@ private void OnEnable()
     void UpdateSpeed()
     {
        Gear currentGear = carGearBox.CurrentGear;
+        if(carGearBox.rpm>2000 && (carGearBox.currentGear != 1 || carGearBox.currentGear != 0)){
+            engineStarted = false;
+            carEffects.StartEngineSound();
+        }
         if (autoShifting) {
 
             AutoShift();
@@ -214,7 +218,7 @@ private void OnEnable()
         else if(throttleInput == 1 && forwardSpeed < -0.1 && carGearBox.currentGear==0)
         {
             carGearBox.ShiftUp();
-            carGearBox.ShiftUp();        
+                  
         }
     }
     // Update is called once per frame

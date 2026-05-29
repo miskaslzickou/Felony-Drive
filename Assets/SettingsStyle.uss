@@ -1,0 +1,21 @@
+#ResolutionDropdown VisualElement,#ScreenDropdown  VisualElement ,#QualityDropdown VisualElement,#VSYNC VisualElement {
+    background-color: rgb(255,255,255);
+  
+    color: rgb(0,0,0);
+  
+
+}
+#unity-tab__header{
+   background-color: rgba(0,0,0,0);
+    color:rgb(255,255,255);
+}
+#unity-tab__header:checked #unity-tab__header-underline{
+    background-color:rgb(255,255,255);
+}
+.unity-base-slider__dragger {
+    background-color: white;
+}
+
+.unity-slider > .unity-base-slider__input > .unity-base-slider__tracker {
+    background-color: white;
+}

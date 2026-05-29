@@ -650,9 +650,9 @@ ScriptedImporter:
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: -128
+        x: 0
         y: 0
-        width: 1408
+        width: 1280
         height: 640
       spriteId: 86a9b7d9691551e4fa7a3d53d07fc6da
     linkedCells: []
