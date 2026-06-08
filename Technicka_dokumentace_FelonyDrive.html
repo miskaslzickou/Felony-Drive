@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<title>Technická dokumentace – Felony Drive</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 10.5pt;
+    color: #222;
+    background: white;
+    padding: 2.5cm 2.5cm 2.5cm 2.5cm;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 22pt;
+    font-weight: bold;
+    color: #1a3a5c;
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+  }
+  h2 {
+    font-size: 15pt;
+    font-weight: bold;
+    color: #1a5c8a;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    padding-top: 8px;
+    border-top: 2px solid #dde;
+  }
+  h3 {
+    font-size: 13pt;
+    font-weight: bold;
+    color: #1a5c8a;
+    margin-top: 24px;
+    margin-bottom: 6px;
+  }
+  h4 {
+    font-size: 10.5pt;
+    font-weight: bold;
+    font-style: italic;
+    color: #2a7ab0;
+    margin-top: 14px;
+    margin-bottom: 4px;
+  }
+  p {
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+  ul {
+    margin: 6px 0 10px 22px;
+    line-height: 1.6;
+  }
+  code, pre {
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 9.5pt;
+    color: #174875;
+  }
+  pre {
+    background: #f5f8fc;
+    border-left: 3px solid #2a7ab0;
+    padding: 8px 12px;
+    margin: 8px 0 12px 0;
+    white-space: pre-wrap;
+    border-radius: 2px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 14px 0;
+    font-size: 10pt;
+  }
+  th {
+    text-align: left;
+    background: #f0f0f0;
+    padding: 5px 10px;
+    border-bottom: 1px solid #bbb;
+    font-weight: normal;
+    color: #333;
+  }
+  td {
+    padding: 4px 10px;
+    border-bottom: 1px solid #e0e0e0;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  td:first-child, th:first-child { font-family: "Consolas", "Courier New", monospace; font-size: 9.5pt; }
+  .intro-table td:first-child { font-family: "Segoe UI", Arial, sans-serif; font-size: 10pt; }
+  .intro-table th:first-child { font-family: "Segoe UI", Arial, sans-serif; }
+  hr { border: none; border-top: 2px solid #dde; margin: 24px 0 0 0; }
+  .section-divider { border: none; border-top: 1px solid #e5e5e5; margin: 18px 0; }
+  @media print {
+    body { padding: 0; }
+    h2 { page-break-before: auto; }
+  }
+</style>
+</head>
+<body>
+
+<h1>Technická dokumentace – Felony Drive</h1>
+
+<p>Felony Drive je 2D závodní hra vytvořená v enginu Unity. Hráč řídí auto po herním světě, plní doručovací mise, tankuje na benzínové stanici a vydělává peníze. Hra obsahuje fyzikální model auta s převodovkou, dynamickým gripem, nitrem a palivem. Veškerý postup se ukládá do souboru JSON.</p>
+
+<p>Hra umožňuje:</p>
+<ul>
+  <li>Ovládání auta s manuální nebo automatickou převodovkou</li>
+  <li>Plnění doručovacích misí a sbírání odměn</li>
+  <li>Tankování paliva a nitra na benzínové stanici</li>
+  <li>Poslouchání rádia (systémové audio Windows nebo interní stanice)</li>
+  <li>Nastavení grafiky, zvuku a klávesových zkratek</li>
+  <li>Ukládání a načítání herního stavu</li>
+</ul>
+
+<hr>
+<h2>Struktura projektu</h2>
+
+<p>Projekt je tvořen samostatnými třídami – MonoBehaviours – přiřazenými k objektům ve scéně. Třídy jsou rozděleny do tematických skupin.</p>
+
+<table class="intro-table">
+  <tr><th>Skupina</th><th>Scripty</th></tr>
+  <tr><td>Řízení auta</td><td>CarControllerV2, CarGearBox, CarEffects, CarFuel, CarNitro, CarRadio</td></tr>
+  <tr><td>Uživatelské rozhraní</td><td>UI, UIData, MinimapArrow</td></tr>
+  <tr><td>Herní systémy</td><td>CameraController, DayNightCycle, PlayerWallet, SaveData</td></tr>
+  <tr><td>Mise a interakce</td><td>DeliveryMission, DeliveryDropOff, GasStation, TriggerChecker</td></tr>
+  <tr><td>Menu a nastavení</td><td>MainMenu, Settings, Pause</td></tr>
+  <tr><td>Editor nástroje</td><td>FullSreen (pouze v Unity Editoru)</td></tr>
+  <tr><td>Vstup (autogenerováno)</td><td>PlayerActions</td></tr>
+</table>
+
+<hr>
+<h2>Přehled klávesových zkratek</h2>
+
+<table class="intro-table">
+  <tr><th>Klávesa</th><th>Akce</th></tr>
+  <tr><td>W / S</td><td>Plyn / Brzda nebo zpátečka</td></tr>
+  <tr><td>A / D</td><td>Zatáčení vlevo / vpravo</td></tr>
+  <tr><td>Mezerník</td><td>Ruční brzda</td></tr>
+  <tr><td>E</td><td>Start / stop motoru</td></tr>
+  <tr><td>L</td><td>Světla zapnout / vypnout</td></tr>
+  <tr><td>H</td><td>Houkání</td></tr>
+  <tr><td>Šipka nahoru / dolů</td><td>Řazení nahoru / dolů</td></tr>
+  <tr><td>Shift</td><td>Nitro</td></tr>
+  <tr><td>B</td><td>Přepnutí automatické / manuální převodovky</td></tr>
+  <tr><td>P</td><td>Pauza</td></tr>
+  <tr><td>I (u benzínky)</td><td>Tankování</td></tr>
+</table>
+
+<hr>
+<h2>Přehled všech tříd</h2>
+
+<table class="intro-table">
+  <tr><th>Třída</th><th>Soubor</th><th>Účel</th></tr>
+  <tr><td>CarControllerV2</td><td>CarControllerV2.cs</td><td>Hlavní fyzikální řadič auta</td></tr>
+  <tr><td>CarGearBox</td><td>CarGearBox.cs</td><td>Převodovka a výpočet RPM</td></tr>
+  <tr><td>CarEffects</td><td>CarEffects.cs</td><td>Zvukové a vizuální efekty auta</td></tr>
+  <tr><td>CarFuel</td><td>CarFuel.cs</td><td>Správa paliva</td></tr>
+  <tr><td>CarNitro</td><td>CarNitro.cs</td><td>Správa a logika nitra</td></tr>
+  <tr><td>CarRadio</td><td>CarRadio.cs</td><td>Rádio s podporou systémového přehrávače</td></tr>
+  <tr><td>CameraController</td><td>CameraController.cs</td><td>Sledování hráče kamerou</td></tr>
+  <tr><td>DayNightCycle</td><td>DayNightCycle.cs</td><td>Cyklus dne a noci</td></tr>
+  <tr><td>UIData</td><td>UIData.cs</td><td>Sdílená data pro UI (ScriptableObject)</td></tr>
+  <tr><td>UI</td><td>UI.cs</td><td>HUD – rychloměr, tachometr, palivo, nitro</td></tr>
+  <tr><td>MinimapArrow</td><td>MinimapArrow.cs</td><td>Šipka na minimapě ukazující k cíli</td></tr>
+  <tr><td>PlayerWallet</td><td>PlayerWallet.cs</td><td>Správa peněz hráče</td></tr>
+  <tr><td>SaveData</td><td>SaveData.cs</td><td>Ukládání a načítání hry do JSON</td></tr>
+  <tr><td>TriggerChecker</td><td>TriggerChecker.cs</td><td>Obecný detektor vstupu/výstupu z triggeru</td></tr>
+  <tr><td>GasStation</td><td>GasStation.cs</td><td>Benzínová stanice – tankování paliva a nitra</td></tr>
+  <tr><td>DeliveryMission</td><td>DeliveryMission.cs</td><td>Spuštění doručovací mise</td></tr>
+  <tr><td>DeliveryDropOff</td><td>DeliveryDropOff.cs</td><td>Dokončení mise a výplata odměny</td></tr>
+  <tr><td>MainMenu</td><td>MainMenu.cs</td><td>Hlavní menu hry</td></tr>
+  <tr><td>Settings</td><td>Settings.cs</td><td>Nastavení grafiky, zvuku a kláves</td></tr>
+  <tr><td>Pause</td><td>Pause.cs</td><td>Pozastavení hry</td></tr>
+  <tr><td>FullscreenHotkeyHandler</td><td>FullSreen.cs</td><td>Editor nástroj pro fullscreen zobrazení</td></tr>
+</table>
+
+<h4>Pomocné třídy (definovány uvnitř skriptů)</h4>
+<table class="intro-table">
+  <tr><th>Třída</th><th>Definována v</th><th>Účel</th></tr>
+  <tr><td>Gear</td><td>CarGearBox.cs</td><td>Serializovatelná data jednoho stupně převodovky</td></tr>
+  <tr><td>Gauge</td><td>UI.cs</td><td>Ovládání ručičkového budíku v HUD</td></tr>
+  <tr><td>Gauge.GaugeNeedle</td><td>UI.cs</td><td>Otáčení ručičky budíku</td></tr>
+  <tr><td>ButtonHandler</td><td>UI.cs</td><td>Obsluha tlačítek v herním HUD</td></tr>
+  <tr><td>MenuButton</td><td>MainMenu.cs, Settings.cs</td><td>Obsluha tlačítek hlavního menu</td></tr>
+  <tr><td>SaveData.SaveDataObj</td><td>SaveData.cs</td><td>Serializovatelný objekt uložené hry</td></tr>
+</table>
+
+<hr>
+<h2>Dokumentace tříd</h2>
+
+<!-- CarControllerV2 -->
+<h3>CarControllerV2</h3>
+<pre>public class CarControllerV2 : MonoBehaviour</pre>
+<p>Hlavní skript pro ovládání auta. Zpracovává vstup hráče, počítá fyziku pohybu, řízení a simuluje grip pneumatik pomocí sil aplikovaných na přední a zadní nápravu.</p>
+
+<h4>Veřejné proměnné</h4>
+<table>
+  <tr><th>Proměnná</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>maxSpeed</td><td>float</td><td>Maximální rychlost dopředu (m/s)</td></tr>
+  <tr><td>maxReverseSpeed</td><td>float</td><td>Maximální rychlost jízdy vzad</td></tr>
+  <tr><td>weight</td><td>float</td><td>Hmotnost auta (předána Rigidbody2D)</td></tr>
+  <tr><td>steeringPower</td><td>float</td><td>Síla točivého momentu při zatáčení</td></tr>
+  <tr><td>brakeForce</td><td>float</td><td>Odpor při brzdění</td></tr>
+  <tr><td>cruiseDamping</td><td>float</td><td>Odpor při jízdě bez plynu</td></tr>
+  <tr><td>frontGrip</td><td>float</td><td>Boční grip přední nápravy</td></tr>
+  <tr><td>rearGrip</td><td>float</td><td>Boční grip zadní nápravy</td></tr>
+  <tr><td>axleDistance</td><td>float</td><td>Vzdálenost nápravy od středu auta</td></tr>
+  <tr><td>optimalSteeringSpeed</td><td>float</td><td>Rychlost s nejúčinnějším zatáčením</td></tr>
+  <tr><td>autoShifting</td><td>bool</td><td>Přepínač automatické převodovky</td></tr>
+  <tr><td>engineStarted</td><td>bool</td><td>Stav motoru (zapnutý / vypnutý)</td></tr>
+  <tr><td>isHandbrake</td><td>bool</td><td>Stav ruční brzdy</td></tr>
+  <tr><td>isBraking</td><td>bool</td><td>Příznak aktivního brzdění</td></tr>
+  <tr><td>isHonking</td><td>bool</td><td>Příznak aktivního houkání</td></tr>
+</table>
+
+<h4>Vlastnosti (Properties)</h4>
+<table>
+  <tr><th>Vlastnost</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>speed</td><td>float</td><td>Okamžitá rychlost (velikost vektoru rychlosti)</td></tr>
+  <tr><td>throttleInput</td><td>float</td><td>Vstup plynu / brzdy (−1 až 1)</td></tr>
+  <tr><td>steeringInput</td><td>float</td><td>Vstup řízení (−1 až 1)</td></tr>
+  <tr><td>normalizedSpeed</td><td>float</td><td>Rychlost normalizovaná na rozsah 0–1</td></tr>
+  <tr><td>CarCoords</td><td>Vector2</td><td>Aktuální pozice auta ve světě</td></tr>
+  <tr><td>Heading</td><td>float</td><td>Aktuální natočení auta (euler Z)</td></tr>
+</table>
+
+<h4>Metody</h4>
+<table>
+  <tr><th>Metoda</th><th>Popis</th></tr>
+  <tr><td>SetHeading(float heading)</td><td>Nastaví natočení auta na zadaný úhel</td></tr>
+  <tr><td>SetCoords(Vector2 coords)</td><td>Nastaví pozici auta</td></tr>
+  <tr><td>EngineStart()</td><td>Přepíná stav motoru a spouští zvuk</td></tr>
+  <tr><td>GetInputs()</td><td>Čte vstup z PlayerActions každý frame</td></tr>
+  <tr><td>UpdateSpeed()</td><td>Aplikuje hnací síly, brzdné síly a grip pneumatik</td></tr>
+  <tr><td>AutoShift()</td><td>Logika automatického řazení</td></tr>
+  <tr><td>GetSteeringMultiplier()</td><td>Vrátí koeficient účinnosti řízení podle rychlosti</td></tr>
+</table>
+
+<h4>Průběh FixedUpdate</h4>
+<p>1. Čte vstup hráče přes <code>GetInputs()</code><br>
+2. Volá <code>UpdateSpeed()</code>: Aplikuje hnací nebo brzdnou sílu, vypočítá boční rychlosti přední a zadní nápravy a aplikuje třecí síly pro simulaci gripu pneumatik.</p>
+
+<hr class="section-divider">
+
+<!-- CarGearBox -->
+<h3>CarGearBox</h3>
+<pre>public class CarGearBox : MonoBehaviour</pre>
+<p>Spravuje převodovku auta. Uchovává pole rychlostních stupňů, řeší řazení nahoru/dolů a vypočítává aktuální RPM motoru.</p>
+
+<h4>Třída Gear (serializovatelná)</h4>
+<table>
+  <tr><th>Pole</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>name</td><td>string</td><td>Název stupně (např. "R", "N", "1", "2"…)</td></tr>
+  <tr><td>gearAcceleration</td><td>float</td><td>Zrychlující síla tohoto stupně</td></tr>
+  <tr><td>maxSpeed</td><td>float</td><td>Maximální rychlost v tomto stupni (m/s)</td></tr>
+</table>
+
+<h4>Veřejné proměnné CarGearBox</h4>
+<table>
+  <tr><th>Proměnná</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>gears</td><td>Gear[]</td><td>Pole všech rychlostních stupňů</td></tr>
+  <tr><td>maxRPM</td><td>float</td><td>Maximální otáčky motoru</td></tr>
+  <tr><td>currentGear</td><td>int</td><td>Index aktuálního stupně v poli</td></tr>
+  <tr><td>rpmCurve</td><td>AnimationCurve</td><td>Křivka závislosti RPM na rychlosti</td></tr>
+  <tr><td>rpm</td><td>float</td><td>Aktuální otáčky motoru</td></tr>
+  <tr><td>CurrentGear</td><td>Gear</td><td>Aktuální stupeň (property)</td></tr>
+</table>
+
+<h4>Metody</h4>
+<table>
+  <tr><th>Metoda</th><th>Popis</th></tr>
+  <tr><td>ShiftUp()</td><td>Zařadí o stupeň výš (pokud není na maximu)</td></tr>
+  <tr><td>ShiftDown()</td><td>Zařadí o stupeň níž (pokud není na minimu)</td></tr>
+</table>
+
+<h4>Výpočet RPM</h4>
+<p>V neutrálu se RPM ovlivňuje přímo plynem hráče (1 000–maxRPM). V ostatních stupních:</p>
+<pre>rpm = 1000 + rpmCurve.Evaluate(|speed / maxSpeedStupně|) * 4000</pre>
+
+<hr class="section-divider">
+
+<!-- CarEffects -->
+<h3>CarEffects</h3>
+<pre>public class CarEffects : MonoBehaviour</pre>
+<p>Spravuje všechny vizuální a zvukové efekty auta. Reaguje na stav auta (drift, brzdění, RPM, motor).</p>
+
+<h4>Veřejné proměnné</h4>
+<table>
+  <tr><th>Proměnná</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>engineStartAudioClip</td><td>AudioClip</td><td>Zvuk nastartování motoru</td></tr>
+  <tr><td>engineLoopAudioClip</td><td>AudioClip</td><td>Zvuk běžícího motoru (smyčka)</td></tr>
+  <tr><td>honkAudioClip</td><td>AudioClip</td><td>Zvuk houkání</td></tr>
+  <tr><td>driftThreshold</td><td>float</td><td>Boční rychlost nápravy spouštějící drift efekt</td></tr>
+  <tr><td>trailRenderers</td><td>TrailRenderer[]</td><td>Stopy pneumatik (2 kusy)</td></tr>
+  <tr><td>driftParticles</td><td>ParticleSystem[]</td><td>Částicové efekty driftu (2 kusy)</td></tr>
+  <tr><td>headlight</td><td>Light2D[]</td><td>Světla auta</td></tr>
+</table>
+
+<h4>Metody</h4>
+<table>
+  <tr><th>Metoda</th><th>Popis</th></tr>
+  <tr><td>Honk()</td><td>Přehraje nebo zastaví zvuk houkání</td></tr>
+  <tr><td>Lights(bool state)</td><td>Zapne/vypne světla a změní barvu HUD</td></tr>
+  <tr><td>StartEngineSound()</td><td>Spustí nebo zastaví zvuk motoru</td></tr>
+  <tr><td>UpdateVisuals()</td><td>Aktivuje/deaktivuje stopy a částice při driftu</td></tr>
+  <tr><td>UpdateAudio()</td><td>Nastaví pitch motorového zvuku podle RPM</td></tr>
+</table>
+
+<h4>Průběh StartEngineSound</h4>
+<p>1. Přehraje zvuk nastartování (jednorázový)<br>
+2. Po jeho skončení přepne na smyčkový zvuk běžícího motoru<br>
+3. Animuje mírné „trhnutí" auta (změna scale s interpolací zpět)</p>
+
+<hr class="section-divider">
+
+<!-- CarFuel -->
+<h3>CarFuel</h3>
+<pre>public class CarFuel : MonoBehaviour</pre>
+<p>Spravuje zásobu paliva auta. Spotřeba je závislá na zatížení motoru (RPM).</p>
+
+<h4>Proměnné</h4>
+<table>
+  <tr><th>Proměnná</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>maxFuel</td><td>float</td><td>Maximální kapacita nádrže (výchozí 75)</td></tr>
+  <tr><td>currentFuel</td><td>float</td><td>Aktuální množství paliva (property, private set)</td></tr>
+  <tr><td>fuelConsumptionRate</td><td>float</td><td>Základní spotřeba za sekundu</td></tr>
+</table>
+
+<h4>Metody</h4>
+<table>
+  <tr><th>Metoda</th><th>Popis</th></tr>
+  <tr><td>SetFuel(float amount)</td><td>Nastaví palivo na zadanou hodnotu</td></tr>
+  <tr><td>AddFuel(float amount)</td><td>Přidá palivo (nepřekročí maximum)</td></tr>
+</table>
+
+<h4>Výpočet spotřeby</h4>
+<pre>engineLoad = rpm / maxRPM
+fuelBurned = fuelConsumptionRate * engineLoad * Time.deltaTime</pre>
+<p>Spotřeba neprobíhá pokud hráč stojí na benzínce (<code>GasStation.playerInRange</code>).</p>
+
+<hr class="section-divider">
+
+<!-- CarNitro -->
+<h3>CarNitro</h3>
+<pre>public class CarNitro : MonoBehaviour</pre>
+<p>Spravuje zásobu nitra a jeho efekt na rychlost.</p>
+
+<h4>Proměnné</h4>
+<table>
+  <tr><th>Proměnná</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>maxNitro</td><td>float</td><td>Maximální kapacita nitra</td></tr>
+  <tr><td>nitroBoost</td><td>float</td><td>Multiplikátor síly při aktivním nitru</td></tr>
+  <tr><td>nitroConsumptionRate</td><td>float</td><td>Spotřeba nitra za sekundu</td></tr>
+  <tr><td>currentNitro</td><td>float</td><td>Aktuální množství nitra (property)</td></tr>
+  <tr><td>nitroActive</td><td>bool</td><td>Příznak aktivního nitra (property)</td></tr>
+</table>
+
+<h4>Metody</h4>
+<table>
+  <tr><th>Metoda</th><th>Popis</th></tr>
+  <tr><td>ToggleNitro()</td><td>Zapne/vypne nitro (jen pokud není prázdné)</td></tr>
+  <tr><td>SetNitro(float amount)</td><td>Nastaví nitro na zadanou hodnotu</td></tr>
+  <tr><td>AddNitro(float amount)</td><td>Přidá nitro (v rozsahu 0–max)</td></tr>
+</table>
+
+<p>Nitro se spotřebovává pouze pokud je aktivní a auto se pohybuje (<code>normalizedSpeed &gt; 0.1</code>). Multiplikátor <code>nitroBoost</code> je aplikován v CarControllerV2 při výpočtu hnací síly.</p>
+
+<hr class="section-divider">
+
+<!-- CarRadio -->
+<h3>CarRadio</h3>
+<pre>public class CarRadio : MonoBehaviour</pre>
+<p>Ovládá herní rádio. Podporuje dvě stanice: <strong>Mirror</strong> (zrcadlí přehrávané médium ze systému Windows přes nativní plugin) a <strong>InGame1</strong> (interní AudioClip).</p>
+
+<h4>Stanice (RadioStation enum)</h4>
+<table class="intro-table">
+  <tr><th>Hodnota</th><th>Popis</th></tr>
+  <tr><td>Mirror</td><td>Zrcadlí aktuálně přehrávanou hudbu ze systému Windows</td></tr>
+  <tr><td>InGame1</td><td>Interní herní stanice s AudioClipem</td></tr>
+</table>
+
+<h4>Veřejné metody</h4>
+<table>
+  <tr><th>Metoda</th><th>Popis</th></tr>
+  <tr><td>NextStation(int direction)</td><td>Přepne stanici ve směru +1 nebo −1</td></tr>
+  <tr><td>NextSong(int direction)</td><td>Přeskočí skladbu dopředu/dozadu (jen Mirror)</td></tr>
+  <tr><td>PlayPause()</td><td>Přehraje/pozastaví (jen Mirror)</td></tr>
+</table>
+
+<h4>Privátní metody</h4>
+<table>
+  <tr><th>Metoda</th><th>Popis</th></tr>
+  <tr><td>ChangeStation(RadioStation)</td><td>Přepne na danou stanici a inicializuje její chování</td></tr>
+  <tr><td>StartMirrorLoop()</td><td>Spustí asynchronní smyčku dotazující Windows Media Session</td></tr>
+  <tr><td>StopMirrorLoop()</td><td>Bezpečně ukončí smyčku přes CancellationToken</td></tr>
+  <tr><td>SpotifyPollingLoop(token)</td><td>Asynchronní smyčka, každé 2 s načte název a interpreta</td></tr>
+</table>
+
+<p>Plugin <code>MediaPlugin.dll</code> komunikuje se systémem Windows. Volání probíhají asynchronně (<code>Task.Run</code>), aby neblokovala herní vlákno Unity.</p>
+
+<hr class="section-divider">
+
+<!-- CameraController -->
+<h3>CameraController</h3>
+<pre>public class CameraController : MonoBehaviour</pre>
+<p>Sleduje hráče kamerou. Zoom a posun kamery dopředu jsou závislé na aktuální rychlosti auta.</p>
+
+<h4>Proměnné</h4>
+<table>
+  <tr><th>Proměnná</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>target</td><td>Transform</td><td>Transform sledovaného objektu (auto)</td></tr>
+  <tr><td>offset</td><td>Vector3</td><td>Základní offset kamery od hráče</td></tr>
+  <tr><td>cameraMoveSpeed</td><td>float</td><td>Rychlost pohybu kamery (MoveTowards)</td></tr>
+  <tr><td>maxZoomOut</td><td>float</td><td>Maximální orthographicSize při max. rychlosti</td></tr>
+  <tr><td>maxZoomIn</td><td>float</td><td>Minimální orthographicSize při stání</td></tr>
+  <tr><td>zoomSmoothness</td><td>float</td><td>Plynulost interpolace zoomu</td></tr>
+  <tr><td>maxForwardOffset</td><td>float</td><td>Maximální posun kamery dopředu při max. rychlosti</td></tr>
+</table>
+
+<h4>Chování (LateUpdate)</h4>
+<p>1. Vypočítá <code>speedPerc</code> = rychlost / maxSpeed<br>
+2. Interpoluje cílový zoom mezi <code>maxZoomIn</code> a <code>maxZoomOut</code><br>
+3. Interpoluje dopředný posun kamery (0 až <code>maxForwardOffset</code>)<br>
+4. Pohybuje kamerou pomocí <code>Vector3.MoveTowards</code><br>
+5. Plynule mění <code>orthographicSize</code> pomocí <code>Lerp</code></p>
+
+<hr class="section-divider">
+
+<!-- DayNightCycle -->
+<h3>DayNightCycle</h3>
+<pre>public class DayNightCycle : MonoBehaviour</pre>
+<p>Simuluje cyklus dne a noci pomocí globálního 2D světla.</p>
+
+<h4>Proměnné</h4>
+<table>
+  <tr><th>Proměnná</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>globalLight</td><td>Light2D</td><td>Globální světlo scény</td></tr>
+  <tr><td>dayCycle</td><td>Gradient</td><td>Gradient barev průběhu dne</td></tr>
+  <tr><td>dayLength</td><td>float</td><td>Délka jednoho dne v sekundách</td></tr>
+  <tr><td>timeNow</td><td>float</td><td>Aktuální čas cyklu (0 = úsvit, 1 = konec dne)</td></tr>
+</table>
+
+<p>Každý frame se <code>timeNow</code> zvyšuje o <code>Time.deltaTime / dayLength</code>. Po dosažení 1 se resetuje na 0. Barva světla je vyhodnocena z gradientu a intenzita se mění podle sinusoidy.</p>
+
+<hr class="section-divider">
+
+<!-- UIData -->
+<h3>UIData</h3>
+<pre>[CreateAssetMenu]
+public class UIData : ScriptableObject</pre>
+<p>Sdílený ScriptableObject předávající herní data do UI bez přímé vazby na konkrétní scénu.</p>
+
+<h4>Vlastnosti</h4>
+<table>
+  <tr><th>Vlastnost</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>gear</td><td>string</td><td>Název aktuálního rychlostního stupně</td></tr>
+  <tr><td>radioTrack</td><td>string</td><td>Název přehrávané skladby</td></tr>
+  <tr><td>radioChannel</td><td>string</td><td>Název aktuální rozhlasové stanice</td></tr>
+  <tr><td>cash</td><td>float</td><td>Aktuální stav konta hráče</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- UI -->
+<h3>UI</h3>
+<pre>public class UI : MonoBehaviour</pre>
+<p>Hlavní skript herního HUD. Ovládá budíky rychlosti, otáček a paliva, animuje indikátor nitra a registruje tlačítka rádia.</p>
+
+<h4>Třída Gauge – budík</h4>
+<table>
+  <tr><th>Metoda</th><th>Popis</th></tr>
+  <tr><td>Initialize(name, doc)</td><td>Najde VisualElement budíku v UIDocument</td></tr>
+  <tr><td>SetTint(Color)</td><td>Změní barevný nádech grafiky budíku</td></tr>
+</table>
+
+<h4>Třída Gauge.GaugeNeedle – ručička budíku</h4>
+<table>
+  <tr><th>Metoda</th><th>Popis</th></tr>
+  <tr><td>Initialize(name, doc)</td><td>Najde VisualElement ručičky</td></tr>
+  <tr><td>UpdateNeedle(float)</td><td>Nastaví otočení ručičky lineárním lerp mezi MinAngle a MaxAngle</td></tr>
+</table>
+
+<h4>Metody UI</h4>
+<table>
+  <tr><th>Metoda</th><th>Popis</th></tr>
+  <tr><td>UpdateNitroUI()</td><td>Animuje hladinu nitra (pohyb kapaliny při akceleraci a zatáčení)</td></tr>
+  <tr><td>ChangeSpeedometerTint(bool)</td><td>Mění barvu budíků podle stavu světel auta</td></tr>
+</table>
+
+<p>Každý frame normalizuje hodnoty rychlosti, RPM a paliva a volá <code>UpdateNeedle()</code> na každý budík.</p>
+
+<hr class="section-divider">
+
+<!-- MinimapArrow -->
+<h3>MinimapArrow</h3>
+<pre>public class MinimapArrow : MonoBehaviour</pre>
+<p>Zobrazuje šipku na minimapě ukazující směrem k aktivnímu cíli mise.</p>
+
+<h4>Proměnné</h4>
+<table>
+  <tr><th>Proměnná</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>target (static)</td><td>Transform</td><td>Cíl mise (pickup nebo dropoff)</td></tr>
+  <tr><td>player</td><td>Transform</td><td>Transform hráče</td></tr>
+</table>
+
+<p>Pokud je <code>target == null</code>, šipka se skryje. Jinak vypočítá úhel mezi hráčem a cílem pomocí <code>Atan2</code> a nastaví rotaci objektu.</p>
+
+<hr class="section-divider">
+
+<!-- PlayerWallet -->
+<h3>PlayerWallet</h3>
+<pre>public class PlayerWallet : MonoBehaviour</pre>
+<p>Statická správa konta hráče. Hodnota <code>cash</code> je dostupná odkudkoli ve hře.</p>
+
+<h4>Proměnné a metody</h4>
+<table>
+  <tr><th>Člen</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>cash</td><td>float (static)</td><td>Aktuální hotovost hráče (výchozí 250)</td></tr>
+  <tr><td>Add(float amount)</td><td>static void</td><td>Přidá částku a aktualizuje UIData</td></tr>
+  <tr><td>Subtract(float amount)</td><td>static void</td><td>Odečte částku a aktualizuje UIData</td></tr>
+  <tr><td>SetCash(float amount)</td><td>static void</td><td>Nastaví hotovost na přesnou hodnotu</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- SaveData -->
+<h3>SaveData</h3>
+<pre>public class SaveData : MonoBehaviour</pre>
+<p>Ukládá a načítá herní stav do/ze souboru <code>save.json</code> v <code>Application.persistentDataPath</code>.</p>
+
+<h4>Třída SaveDataObj (serializovatelná)</h4>
+<table>
+  <tr><th>Pole</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>cash</td><td>float</td><td>Hotovost hráče</td></tr>
+  <tr><td>fuel</td><td>float</td><td>Množství paliva</td></tr>
+  <tr><td>nitro</td><td>float</td><td>Množství nitra</td></tr>
+  <tr><td>coords</td><td>Vector2</td><td>Pozice auta</td></tr>
+  <tr><td>heading</td><td>float</td><td>Natočení auta</td></tr>
+</table>
+
+<h4>Metody</h4>
+<table>
+  <tr><th>Metoda</th><th>Popis</th></tr>
+  <tr><td>SaveGameplayData()</td><td>Serializuje aktuální stav do JSON a zapíše soubor</td></tr>
+  <tr><td>ReadGameplayData()</td><td>Načte JSON ze souboru a aplikuje data do hry</td></tr>
+  <tr><td>SaveDataObj.GetData()</td><td>Sestaví objekt s aktuálními hodnotami</td></tr>
+  <tr><td>SaveDataObj.LoadData()</td><td>Aplikuje uložená data zpět do hry</td></tr>
+</table>
+
+<h4>Cesta k souboru</h4>
+<pre>Application.persistentDataPath + "/save.json"</pre>
+<p>Na Windows typicky: <code>%APPDATA%\..\LocalLow\&lt;Company&gt;\&lt;Product&gt;\save.json</code></p>
+
+<hr class="section-divider">
+
+<!-- TriggerChecker -->
+<h3>TriggerChecker</h3>
+<pre>public class TriggerChecker : MonoBehaviour</pre>
+<p>Obecný detektor vstupu a výstupu hráče z 2D triggeru. Umožňuje přiřadit libovolné akce bez podtřídění.</p>
+
+<h4>Události</h4>
+<table>
+  <tr><th>Událost</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>onTriggered</td><td>System.Action</td><td>Vyvolána při vstupu hráče do triggeru</td></tr>
+  <tr><td>onExit</td><td>System.Action</td><td>Vyvolána při výstupu hráče z triggeru</td></tr>
+</table>
+<p>Reaguje pouze na objekty s tagem <code>"Player"</code>.</p>
+
+<hr class="section-divider">
+
+<!-- GasStation -->
+<h3>GasStation</h3>
+<pre>public class GasStation : MonoBehaviour</pre>
+<p>Benzínová stanice doplňující palivo a nitro za peníze.</p>
+
+<h4>Proměnné</h4>
+<table>
+  <tr><th>Proměnná</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>flowRate</td><td>float</td><td>Rychlost doplňování paliva (jednotky/s)</td></tr>
+  <tr><td>playerInRange (static)</td><td>bool</td><td>Hráč je v dosahu stanice</td></tr>
+  <tr><td>triggers</td><td>Collider2D[]</td><td>Triggery stanice (přiřazovány dynamicky)</td></tr>
+  <tr><td>text</td><td>TextMeshPro</td><td>Text zobrazující instrukce a stav paliva</td></tr>
+</table>
+
+<p>Při startu přiřadí <code>TriggerChecker</code> ke každému triggeru. Pokud hráč stojí v triggeru a drží klávesu <strong>I</strong> a má dostatek peněz, doplňuje se palivo rychlostí <code>flowRate</code> za cenu <code>flowRate * 3</code> za sekundu. Nitro se doplňuje rychlostí <code>flowRate * 0.5</code> za sekundu.</p>
+
+<hr class="section-divider">
+
+<!-- DeliveryMission -->
+<h3>DeliveryMission</h3>
+<pre>public class DeliveryMission : MonoBehaviour</pre>
+<p>Spouštěč doručovací mise. Aktivuje se při vstupu hráče do pickup zóny.</p>
+
+<h4>Proměnné</h4>
+<table>
+  <tr><th>Proměnná</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>dropoff</td><td>GameObject</td><td>Objekt cílové dropoff zóny</td></tr>
+  <tr><td>isDelivering (static)</td><td>bool</td><td>Příznak probíhající mise</td></tr>
+</table>
+
+<h4>Chování při vstupu hráče</h4>
+<p>1. Zkontroluje, zda neprobíhá jiná mise<br>
+2. Nastaví <code>isDelivering = true</code><br>
+3. Nastaví <code>MinimapArrow.target</code> na dropoff objekt<br>
+4. Aktivuje dropoff zónu<br>
+5. Zničí sám sebe</p>
+
+<hr class="section-divider">
+
+<!-- DeliveryDropOff -->
+<h3>DeliveryDropOff</h3>
+<pre>public class DeliveryDropOff : MonoBehaviour</pre>
+<p>Cílová zóna doručovací mise.</p>
+
+<h4>Proměnné</h4>
+<table>
+  <tr><th>Proměnná</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>reward</td><td>float</td><td>Finanční odměna za dokončení mise</td></tr>
+</table>
+
+<p>Při vstupu hráče: nastaví <code>isDelivering = false</code>, přidá odměnu do <code>PlayerWallet</code>, zničí sám sebe. Šipka na minimapě se automaticky skryje.</p>
+
+<hr class="section-divider">
+
+<!-- MainMenu -->
+<h3>MainMenu</h3>
+<pre>public class MainMenu : MonoBehaviour</pre>
+<p>Ovládá tlačítka hlavního menu. Třída <code>MenuButton</code> registruje kliknutí a hover efekt (přiblížení scale na 1.2) na tlačítku v UIDocument.</p>
+
+<h4>Metody</h4>
+<table>
+  <tr><th>Metoda</th><th>Popis</th></tr>
+  <tr><td>Play()</td><td>Načte herní scénu "Game"</td></tr>
+  <tr><td>Quit()</td><td>Ukončí aplikaci</td></tr>
+</table>
+<p>Tlačítka <code>PlayButton</code>, <code>SettingsButton</code> a <code>QuitButton</code> jsou registrována v <code>OnEnable()</code>.</p>
+
+<hr class="section-divider">
+
+<!-- Settings -->
+<h3>Settings</h3>
+<pre>public class Settings : MonoBehaviour</pre>
+<p>Nastavení hry – grafika, zvuk a přemapování kláves. Nastavení jsou ukládána do <code>PlayerPrefs</code>.</p>
+
+<h4>Metody</h4>
+<table>
+  <tr><th>Metoda</th><th>Popis</th></tr>
+  <tr><td>SettingsToggle()</td><td>Zobrazí/skryje panel nastavení</td></tr>
+  <tr><td>SetupGraphics()</td><td>Inicializuje dropdowny pro rozlišení, mod obrazovky, kvalitu a VSync</td></tr>
+  <tr><td>SetupAudio()</td><td>Inicializuje slidery Master/Music/SFX a aplikuje hodnoty na AudioMixer</td></tr>
+  <tr><td>SetupKeybinds()</td><td>Dynamicky generuje UI pro přemapování kláves pomocí Unity Input System rebinding API</td></tr>
+</table>
+
+<h4>Ukládané hodnoty v PlayerPrefs</h4>
+<table class="intro-table">
+  <tr><th>Klíč</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>quality</td><td>int</td><td>Index úrovně kvality grafiky</td></tr>
+  <tr><td>vsync</td><td>int</td><td>VSync (0 nebo 1)</td></tr>
+  <tr><td>screenMode</td><td>int</td><td>Mód obrazovky (FullScreenMode)</td></tr>
+  <tr><td>resolution</td><td>string</td><td>Rozlišení ve formátu "1920x1080"</td></tr>
+  <tr><td>master</td><td>float</td><td>Hlasitost Master kanálu</td></tr>
+  <tr><td>music</td><td>float</td><td>Hlasitost Music kanálu</td></tr>
+  <tr><td>sfx</td><td>float</td><td>Hlasitost SFX kanálu</td></tr>
+  <tr><td>keybinds</td><td>string</td><td>JSON s přemapovanými klávesami</td></tr>
+</table>
+
+<hr class="section-divider">
+
+<!-- Pause -->
+<h3>Pause</h3>
+<pre>public class Pause : MonoBehaviour</pre>
+<p>Zpracovává pauzu hry. Při stisku klávesy <strong>P</strong> zastaví čas a otevře panel nastavení.</p>
+
+<h4>Proměnné</h4>
+<table>
+  <tr><th>Proměnná</th><th>Typ</th><th>Popis</th></tr>
+  <tr><td>isPaused</td><td>bool</td><td>Aktuální stav pauzy</td></tr>
+  <tr><td>settings</td><td>Settings</td><td>Reference na skript Settings</td></tr>
+</table>
+
+<p>Přepíná <code>Time.timeScale</code> mezi 0 (pauza) a 1 (hra) a volá <code>settings.SettingsToggle()</code>.</p>
+
+<hr class="section-divider">
+
+<!-- FullSreen -->
+<h3>FullscreenHotkeyHandler (editor only)</h3>
+<pre>#if UNITY_EDITOR
+public class FullscreenHotkeyHandler : MonoBehaviour</pre>
+<p>Nástroj pro Unity Editor umožňující přepínání herního okna do fullscreen módu. <strong>Není součástí sestavení hry.</strong></p>
+
+<p>Při startu automaticky přepne do fullscreen. Klávesa <code>\</code> (backslash) přepíná fullscreen za běhu. Dostupné také přes menu <code>Window → General → Game (Fullscreen)</code>.</p>
+
+<hr>
+<h2>Shrnutí</h2>
+
+<p>Felony Drive je rozčleněna do přehledných, samostatných tříd, kde každá třída nese jasně definovanou odpovědnost. Fyzikální model auta zajišťuje <code>CarControllerV2</code> ve spolupráci s <code>CarGearBox</code>, <code>CarFuel</code> a <code>CarNitro</code>. Veškeré efekty jsou odděleny do <code>CarEffects</code>. UI je postaveno na UI Toolkit a data jsou sdílena přes ScriptableObject <code>UIData</code>. Herní postup je perzistentní díky <code>SaveData</code> (JSON soubor) a nastavení hráče jsou uchována v <code>PlayerPrefs</code>.</p>
+
+</body>
+</html>

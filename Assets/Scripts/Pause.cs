@@ -17,7 +17,7 @@ public class Pause : MonoBehaviour
             isPaused = !isPaused;
             Time.timeScale = isPaused ? 0 : 1;
             settings.SettingsToggle();
-          
+            AudioListener.pause = isPaused;
         };
     }
    

@@ -4,6 +4,7 @@ using System.IO;
 using Unity.VisualScripting;
 using UnityEngine;
 using static SaveData;
+using static Unity.Cinemachine.CinemachineOrbitalTransposer;
 
 public class SaveData : MonoBehaviour
 {
@@ -54,6 +55,15 @@ public class SaveData : MonoBehaviour
         ReadGameplayData();
        
     }
+    public static void ResetData()
+    {
+        File.Delete(Application.persistentDataPath + "/save.json");
+        PlayerWallet.SetCash(300f);
+        carFuel.SetFuel(carFuel.maxFuel);
+        carNitro.SetNitro(carNitro.maxNitro);
+        carControllerV2.SetCoords(new Vector2(-1.84f, -0.3f));
+        carControllerV2.SetHeading(-90f);
+    }
     public static void SaveGameplayData()
     {   
         
@@ -68,4 +78,5 @@ public class SaveData : MonoBehaviour
         data.LoadData();
     
     }
+    
 }

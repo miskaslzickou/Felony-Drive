@@ -41,6 +41,12 @@ public class Settings : MonoBehaviour
         
         });
         new MenuButton("QuitDesktopButton", UIDocument, () => Application.Quit());
+        new MenuButton("ResetButton", UIDocument, () => {
+            SaveData.ResetData();
+          
+          
+           
+        } );
         UIDocument.rootVisualElement.style.display = DisplayStyle.None;
         if (initialized) return;
         initialized = true;
