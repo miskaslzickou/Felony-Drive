@@ -25,6 +25,7 @@ public class SaveData : MonoBehaviour
        
        public static SaveDataObj GetData()
         {
+            if (carControllerV2 == null) return null;
             return new SaveDataObj
             {
                 cash = PlayerWallet.cash,
@@ -65,8 +66,9 @@ public class SaveData : MonoBehaviour
         carControllerV2.SetHeading(-90f);
     }
     public static void SaveGameplayData()
-    {   
-        
+    {
+        var data = SaveDataObj.GetData();
+        if (data == null) return;
         string json = JsonUtility.ToJson(SaveDataObj.GetData());
         File.WriteAllText(Application.persistentDataPath + "/save.json", json);
     }
