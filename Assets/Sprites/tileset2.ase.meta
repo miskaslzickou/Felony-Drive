@@ -72,7 +72,7 @@ ScriptedImporter:
     textureFormatSet: 0
     applyGammaDecoding: 0
   previousAsepriteImporterSettings:
-    fileImportMode: 0
+    fileImportMode: 2
     importHiddenLayers: 0
     layerImportMode: 1
     defaultPivotSpace: 0
@@ -87,7 +87,7 @@ ScriptedImporter:
     generateIndividualEvents: 1
     generateSpriteAtlas: 1
   asepriteImporterSettings:
-    fileImportMode: 0
+    fileImportMode: 2
     importHiddenLayers: 0
     layerImportMode: 1
     defaultPivotSpace: 0
@@ -102,7 +102,7 @@ ScriptedImporter:
     generateIndividualEvents: 1
     generateSpriteAtlas: 1
   importFileNodeState: 1
-  platformSettingsDirtyTick: 639148270658725563
+  platformSettingsDirtyTick: 639165499968052947
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -622,8 +622,8 @@ ScriptedImporter:
       serializedVersion: 2
       x: 0
       y: 0
-      width: 1280
-      height: 384
+      width: 2176
+      height: 768
     spriteID: 86a9b7d9691551e4fa7a3d53d07fc6da
     spriteBone: []
     spriteOutline: []
@@ -646,14 +646,14 @@ ScriptedImporter:
     layerType: 0
     blendMode: 0
     cells:
-    - name: tileset2
+    - name: Layer 1
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
         x: 0
         y: 0
-        width: 1280
-        height: 640
+        width: 2176
+        height: 768
       spriteId: 86a9b7d9691551e4fa7a3d53d07fc6da
     linkedCells: []
     tileCells: []
@@ -688,5 +688,5 @@ ScriptedImporter:
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 1280, y: 640}
-  previousTextureSize: {x: 2048, y: 1024}
+  canvasSize: {x: 2176, y: 768}
+  previousTextureSize: {x: 4096, y: 1024}

@@ -1,4 +1,5 @@
 //Michal Mikuš, 3C, PVA, Felony Drive
+using System.Security.Policy;
 using UnityEngine;
 
 
@@ -6,6 +7,7 @@ public class CarControllerV2 : MonoBehaviour
 {
     private PlayerActions playerActions;
     private Rigidbody2D rb;
+  
     private Collider2D carCollider;
     [Header("Fyzikální hodnoty")]
     public float maxSpeed = 61f;
@@ -39,17 +41,25 @@ public class CarControllerV2 : MonoBehaviour
     [Header("Komponenty")]
     private CarEffects carEffects; // Reference na skript pro efekty
     private CarGearBox carGearBox; // Reference na skript pro převodovku
-    private CarNitro carNitro; // Reference na skript pro nitro
+    public CarNitro carNitro; // Reference na skript pro nitro
+    public CarFuel carFuel;
 
-
+    public Vector2 CarCoords=>transform.position;
+    public float Heading=> transform.eulerAngles.z;
+    public void SetHeading(float heading)=>transform.eulerAngles=new Vector3 (0,0,heading);
+    public void SetCoords(Vector2 coords) =>  transform.position=coords;
     private void Awake()
     {
+
         playerActions = new PlayerActions(); //importov�n� ovl�d�n� 
         rb = GetComponent<Rigidbody2D>();
         carCollider = GetComponent<Collider2D>();
         carEffects = GetComponent<CarEffects>();
         carGearBox = GetComponent<CarGearBox>();
         carNitro = GetComponent<CarNitro>();
+        carFuel = GetComponent<CarFuel>();
+        
+
         rb.mass = weight; //nastaven� hmotnosti auta
         currRearGrip = rearGrip;
       
@@ -138,36 +148,42 @@ private void OnEnable()
     void UpdateSpeed()
     {
        Gear currentGear = carGearBox.CurrentGear;
-        if(carGearBox.rpm>2000 && (carGearBox.currentGear != 1 || carGearBox.currentGear != 0)){
-            engineStarted = false;
-            carEffects.StartEngineSound();
-        }
-        if (autoShifting) {
-
+        //Podmínka pro zhasnutí motoru při příliš nízkých otáčkách, ale idk jestli to není otravné
+        //if(carGearBox.rpm<1400 && carGearBox.currentGear != 1 && carGearBox.currentGear != 0 &&carGearBox.currentGear!=2){
+        //    engineStarted = false;
+        //    carEffects.StartEngineSound();
+        //}
+        if (autoShifting)
             AutoShift();
-        }
 
-
-        if (throttleInput == 1 && engineStarted||(throttleInput==-1 && carGearBox.currentGear==0 && autoShifting))
+        if (throttleInput == 1 && engineStarted)
         {
-            float direction = carGearBox.currentGear==0 && autoShifting ? -1f : 1f;
+            float direction = carGearBox.currentGear == 0 ? -1f : 1f;
             rb.linearDamping = 0f;
-            float speedFactor = 1 - (forwardSpeed / currentGear.maxSpeed);
+            float speedFactor = 1 - (Mathf.Abs(forwardSpeed) / Mathf.Abs(currentGear.maxSpeed));
             speedFactor = Mathf.Clamp01(speedFactor);
-            float finalForce=throttleInput * currentGear.gearAcceleration*direction*speedFactor*(carNitro.nitroActive? carNitro.nitroBoost : 1f);
-            rb.AddForce(transform.up *finalForce);
+            float finalForce = Mathf.Abs(currentGear.gearAcceleration) * direction * speedFactor * (carNitro.nitroActive ? carNitro.nitroBoost : 1f);
+            rb.AddForce(transform.up * finalForce);
         }
-        else if (throttleInput == -1||(throttleInput==1&&carGearBox.currentGear==0) && autoShifting)
-        {            
+        else if (throttleInput == -1 && forwardSpeed <= 0.5f && carGearBox.currentGear == 0)
+        {
+            // reverse
+            rb.linearDamping = 0f;
+            float speedFactor = 1 - (Mathf.Abs(forwardSpeed) / maxReverseSpeed);
+            speedFactor = Mathf.Clamp01(speedFactor);
+            rb.AddForce(-transform.up * Mathf.Abs(currentGear.gearAcceleration) * speedFactor);
+        }
+        else if (throttleInput == -1)
+        {
             rb.linearDamping = brakeForce;
-            isBraking = true;   
+            isBraking = true;
         }
         else
         {
             rb.linearDamping = cruiseDamping;
             isBraking = false;
         }
-        
+
         if (Mathf.Abs(forwardSpeed) > 0.13f)
         {
             rb.AddTorque(steeringInput * steeringPower * GetSteeringMultiplier());
@@ -207,18 +223,46 @@ private void OnEnable()
     }
     void AutoShift()
     {
-        if (forwardSpeed > carGearBox.CurrentGear.maxSpeed * 0.9f && forwardSpeed>0)
-            carGearBox.ShiftUp();
-        else if (forwardSpeed < carGearBox.CurrentGear.maxSpeed  * 0.5f && carGearBox.currentGear != 2)
-            carGearBox.ShiftDown();
-        else if (throttleInput == -1 && forwardSpeed < 0.1 && carGearBox.currentGear!=0)
+        // Dopředu z neutrálu nebo zpátečky
+        if (throttleInput == 1 && carGearBox.currentGear <= 1)
         {
-            carGearBox.ShiftDown();
+            carGearBox.ShiftUp();
+            return;
         }
-        else if(throttleInput == 1 && forwardSpeed < -0.1 && carGearBox.currentGear==0)
+
+        // Upshift
+        if (forwardSpeed > carGearBox.CurrentGear.maxSpeed * 0.7f && forwardSpeed > 0 && carGearBox.currentGear > 1)
         {
             carGearBox.ShiftUp();
-                  
+            return;
+        }
+
+        // Downshift
+        if (forwardSpeed > 0.5f && forwardSpeed < carGearBox.CurrentGear.maxSpeed * 0.4f && carGearBox.currentGear > 2)
+        {
+            carGearBox.ShiftDown();
+            return;
+        }
+
+        if (throttleInput == -1)
+        {
+            if (forwardSpeed > 0.5f) // jedeme dopředu - brzdíme
+            {
+                rb.linearDamping = brakeForce;
+                return;
+            }
+            // stojíme nebo skoro stojíme - jdeme do reverse
+            if (Mathf.Abs(forwardSpeed) < 0.5f && carGearBox.currentGear > 0)
+            {
+                carGearBox.ShiftDown();
+                return;
+            }
+        }
+
+        // jedeme dozadu a dáme plyn
+        if (throttleInput == 1 && forwardSpeed < -0.1f && carGearBox.currentGear == 0)
+        {
+            carGearBox.ShiftUp();
         }
     }
     // Update is called once per frame

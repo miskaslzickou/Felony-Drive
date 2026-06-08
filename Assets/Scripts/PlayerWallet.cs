@@ -5,6 +5,7 @@ public  class PlayerWallet : MonoBehaviour
 {
     [SerializeField] public  UIData uiData;
     private static UIData _uiData;
+    public static void SetCash(float amount) => cash = amount;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {

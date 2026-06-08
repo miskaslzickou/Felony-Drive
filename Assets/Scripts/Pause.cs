@@ -15,9 +15,9 @@ public class Pause : MonoBehaviour
         playerActions.Menu.Pause.performed += ctx =>
         {
             isPaused = !isPaused;
-            Time.timeScale = isPaused ?0:1;
-            AudioListener.pause = isPaused;
+            Time.timeScale = isPaused ? 0 : 1;
             settings.SettingsToggle();
+          
         };
     }
    

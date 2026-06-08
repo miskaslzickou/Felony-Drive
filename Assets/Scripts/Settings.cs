@@ -34,7 +34,12 @@ public class Settings : MonoBehaviour
 
     void Start()
     {
-        new MenuButton("QuitMenuButton", UIDocument,()=> SceneManager.LoadScene("MainMenu"));
+        new MenuButton("QuitMenuButton", UIDocument, () => {
+            SaveData.SaveGameplayData();
+            SceneManager.LoadScene("MainMenu");
+            
+        
+        });
         new MenuButton("QuitDesktopButton", UIDocument, () => Application.Quit());
         UIDocument.rootVisualElement.style.display = DisplayStyle.None;
         if (initialized) return;
@@ -217,14 +222,12 @@ public class Settings : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (Time.timeScale == 0 && SceneManager.GetActiveScene().name == "MainMenu")
         {
-            if (SceneManager.GetActiveScene().name == "MainMenu")
-            {
-                SceneManager.LoadScene("MainMenu");
+            Time.timeScale = 1;
+            AudioListener.pause = false;
 
-            }
-           
         }
+
     }
 }

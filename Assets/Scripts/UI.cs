@@ -61,6 +61,7 @@ public class UI : MonoBehaviour
 {
     [Header("Nastavení UI")]
     public UIDocument uiDocument;
+   
     public string needleSpeedElementName = "NeedleSpeed";
     public string speedometerElementName ="Speedometer";
     public string needleRPMElementName = "NeedleRPM";
@@ -72,6 +73,8 @@ public class UI : MonoBehaviour
     public string nextSongButtonElementName = "NextSong";
     public string prevSongButtonElementName = "PrevSong";
     public string playPauseButtonElementName = "PlayPause";
+    public string gameInfoTextElement = "GameInfoText";
+   
     public UIData UIData;
     public CarRadio carRadio;
     public Transform target;
@@ -97,7 +100,7 @@ public class UI : MonoBehaviour
     {
         
         var root = uiDocument.rootVisualElement;
-        
+       
         speedometer.Initialize(speedometerElementName, uiDocument);
         tachometer.Initialize(rpmElementName, uiDocument);
         speedometer.Needle.Initialize(needleSpeedElementName, uiDocument);
@@ -117,7 +120,7 @@ public class UI : MonoBehaviour
         ButtonHandler prevSongButton= new ButtonHandler(prevSongButtonElementName, uiDocument, () => carRadio.NextSong(-1));
         ButtonHandler playPauseButton= new ButtonHandler(playPauseButtonElementName, uiDocument, () => carRadio.PlayPause());
     }
-
+  
     public void UpdateNitroUI()
     {
         float ratio =carNitro.currentNitro / carNitro.maxNitro;

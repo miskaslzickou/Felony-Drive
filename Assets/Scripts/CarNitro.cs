@@ -1,4 +1,5 @@
 //Michal Mikuš, 3C, PVA, Felony Drive
+using System.Security.Policy;
 using UnityEngine;
 
 public class CarNitro : MonoBehaviour
@@ -9,6 +10,8 @@ public class CarNitro : MonoBehaviour
     private CarControllerV2 carController;
     public float currentNitro { get; private set; }
     public bool nitroActive { get; private set; }
+    public void SetNitro(float amount) => currentNitro= amount;
+    public void AddNitro(float amount) => currentNitro = Mathf.Clamp(currentNitro + amount, 0, maxNitro);
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
