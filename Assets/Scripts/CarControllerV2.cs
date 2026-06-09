@@ -314,6 +314,11 @@ public class CarControllerV2 : MonoBehaviour
       
         if (autoShifting)
             AutoShift();
+        if (carFuel.currentFuel < 0.2f)
+        {
+            engineStarted = false;
+            carEffects.StartEngineSound();
+        }
 
       
         Gear currentGear = carGearBox.CurrentGear;
