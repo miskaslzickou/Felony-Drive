@@ -125,7 +125,9 @@ public class CarControllerV2 : MonoBehaviour
     }
     private void EngineStart()
     {
-
+        if (carFuel.currentFuel < 0.2f)
+            return;
+        
         engineStarted = !engineStarted;
         carEffects.StartEngineSound();
     }
@@ -314,7 +316,7 @@ public class CarControllerV2 : MonoBehaviour
       
         if (autoShifting)
             AutoShift();
-        if (carFuel.currentFuel < 0.2f)
+        if ( engineStarted&&carFuel.currentFuel < 0.2f)
         {
             engineStarted = false;
             carEffects.StartEngineSound();
